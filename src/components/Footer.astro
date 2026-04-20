@@ -92,11 +92,11 @@ const footerServices = services.slice(0, 5);
 
   @media (max-width: 768px) {
     .footer {
-      padding: 3.5rem 0 2rem;
+      padding: 2.5rem 0 1.5rem;
     }
     .footer-grid {
       grid-template-columns: 1fr;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
     }
     .footer-brand {
       display: flex;
@@ -104,12 +104,22 @@ const footerServices = services.slice(0, 5);
       align-items: center;
       text-align: center;
     }
+    .footer-brand p {
+      font-size: 0.8rem !important;
+      line-height: 1.5 !important;
+    }
     .footer-logo-img {
-      height: 48px;
-      margin-bottom: 1rem;
+      height: 42px;
+      margin-bottom: 0.8rem;
     }
     .footer-links {
       display: none !important;
+    }
+    .footer-bottom {
+      padding-top: 1.5rem;
+    }
+    .footer-bottom p {
+      font-size: 0.75rem !important;
     }
   }
 </style>
