@@ -325,16 +325,21 @@ ul {
 
   /* Universal Readable Mobile Typography */
   h1, .title-xl {
-    font-size: clamp(2rem, 7vw, 2.5rem) !important;
-    line-height: 1.2 !important;
+    font-size: clamp(1.6rem, 5vw, 2.1rem) !important;
+    line-height: 1.25 !important;
   }
 
   h2, .title-lg, [style*="font-size: 2rem"] {
-    font-size: clamp(1.6rem, 5vw, 1.8rem) !important; 
+    font-size: clamp(1.4rem, 4vw, 1.7rem) !important; 
   }
 
   h3, .title-md {
-    font-size: clamp(1.3rem, 4vw, 1.5rem) !important;
+    font-size: clamp(1.2rem, 3.5vw, 1.4rem) !important;
+  }
+  
+  .category {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.8rem !important;
   }
 
   .btn {
