@@ -19,8 +19,8 @@ const services = await db.select().from(Service);
             {s.icon}
           </div>
           <h3 class="title-md" style="margin-bottom: 1rem;">{s.title}</h3>
-          <p class="text-muted" style="margin-bottom: 1.5rem; line-height:1.6;">{s.desc.substring(0, 100)}...</p>
-          <a href={`/services/${s.id}`} class="btn btn-outline" style={`border-color: ${s.color}; color: white; display:inline-block;`}>Selengkapnya</a>
+          <p class="text-muted" style="margin-bottom: 1.5rem; line-height:1.6; flex-grow: 1;">{s.desc.substring(0, 100)}...</p>
+          <a href={`/services/${s.id}`} class="btn btn-outline" style={`border-color: ${s.color}; color: white; display:inline-block; align-self: flex-start; padding: 0.45rem 1.2rem !important; font-size: 0.85rem !important;`}>Selengkapnya</a>
         </div>
       ))}
     </div>
