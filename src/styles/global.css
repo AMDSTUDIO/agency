@@ -321,9 +321,16 @@ ul {
   
   .container {
     padding: 0 1.25rem;
+  }
+
   /* Root REM Scaling - The Ultimate Responsive Solution */
   html {
     font-size: 13px !important; /* Scales everything by ~81% (13/16) */
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.85rem !important;
   }
 
   p, .body-text, .text-muted, span:not(.category) {
