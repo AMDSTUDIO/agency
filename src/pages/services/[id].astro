@@ -12,15 +12,15 @@ const entry = services[0];
 if (!entry) return new Response("Not found", { status: 404 });
 
 const bannerImages: Record<string, string> = {
-  "project-dev": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop",
+  "project-dev": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop",
   "consult-arch": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop",
-  "consult-biz": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2000&auto=format&fit=crop",
-  "graphic-design": "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=2000&auto=format&fit=crop",
+  "consult-biz": "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?q=80&w=2000&auto=format&fit=crop",
+  "graphic-design": "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2000&auto=format&fit=crop",
   "digital-marketing": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop",
-  "procurement": "https://images.unsplash.com/photo-1586528116311-ad8ed7c80a71?q=80&w=2000&auto=format&fit=crop",
-  "web-dev": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop",
-  "live-streaming": "https://images.unsplash.com/photo-1603576302251-ddcffde7c541?q=80&w=2000&auto=format&fit=crop",
-  "av-specialist": "https://images.unsplash.com/photo-1603576302251-ddcffde7c541?q=80&w=2000&auto=format&fit=crop"
+  "procurement": "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=2000&auto=format&fit=crop",
+  "web-dev": "https://images.unsplash.com/photo-1547658719-da2b51159128?q=80&w=2000&auto=format&fit=crop",
+  "live-streaming": "https://images.unsplash.com/photo-1516280440503-62f4e410b05b?q=80&w=2000&auto=format&fit=crop",
+  "av-specialist": "https://images.unsplash.com/photo-1516280440503-62f4e410b05b?q=80&w=2000&auto=format&fit=crop"
 };
 
 const coverImg = bannerImages[entry.id] || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop";
