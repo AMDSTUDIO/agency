@@ -1,0 +1,51 @@
+---
+// CtaSection.astro
+import { db, GlobalSetting } from 'astro:db';
+
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+const waNumber = settings.whatsapp_number || "0851623219924";
+// clean numbers only (remove + or spaces if any)
+const cleanNumber = waNumber.replace(/\D/g, '');
+---
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-box glass-card">
+      <h2 class="title-lg">Siap Memulai Proyek Anda?</h2>
+      <p class="text-muted cta-desc">Hubungi kami hari ini untuk konsultasi gratis dan mari diskusikan bagaimana kami bisa membantu bisnis Anda melesat maju.</p>
+      <a href={`https://wa.me/${cleanNumber}`} target="_blank" class="btn btn-primary cta-btn">Hubungi Tim Kami Sekarang</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-section {
+    padding: 6rem 0;
+  }
+
+  .cta-box {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--glass-card-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .title-lg {
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-desc {
+    font-size: 1.125rem;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .cta-btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 99px;
+  }
+</style>

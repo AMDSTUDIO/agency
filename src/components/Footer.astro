@@ -1,0 +1,92 @@
+---
+// Footer.astro
+import { db, GlobalSetting, Service } from 'astro:db';
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+
+const services = await db.select().from(Service);
+// Only display top 5 services in footer
+const footerServices = services.slice(0, 5);
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/"><img src="/logo.png" alt="Creative Divisions" style="height: 60px; width: auto; margin-bottom: 1.5rem;" /></a>
+        <p class="text-muted" style="max-width: 300px; font-size: 0.9rem;">
+          {settings.footer_desc}
+        </p>
+      </div>
+      <div class="footer-links">
+        <h3>Layanan Utama</h3>
+        {footerServices.map(s => (
+          <a href={`/services/${s.id}`}>{s.title}</a>
+        ))}
+      </div>
+      <div class="footer-links">
+        <h3>Perusahaan</h3>
+        <a href="/about">Tentang Kami</a>
+        <a href="/#team">Tim Kami</a>
+        <a href="/blog">Blog</a>
+        <a href="#">Karir</a>
+      </div>
+      <div class="footer-links">
+        <h3>Hubungi Kami</h3>
+        <p class="text-muted" style="margin-bottom: 0.8rem; font-size: 0.9rem;" set:html={settings.footer_address}></p>
+        <a href={`mailto:${settings.footer_email}`}>{settings.footer_email}</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="text-muted">© {new Date().getFullYear()} {settings.site_logo || 'Creative Studio'}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--glass-border);
+    padding: 6rem 0 2rem;
+    background: var(--glass-bg);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+  }
+
+  .logo {
+    font-size: 2rem;
+    font-family: var(--font-heading);
+  }
+
+  .footer-links h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--fg);
+  }
+
+  .footer-links a {
+    display: block;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+    transition: color var(--tr-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--primary);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 2rem;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

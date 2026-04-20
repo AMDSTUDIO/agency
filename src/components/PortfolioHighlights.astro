@@ -1,0 +1,113 @@
+---
+// PortfolioHighlights.astro
+import { db, Portfolio, GlobalSetting } from 'astro:db';
+
+const projects = await db.select().from(Portfolio);
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+---
+<section id="portfolio" class="section portfolio">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="title-lg" set:html={settings.portfolio_title} />
+      <p class="text-muted">{settings.portfolio_desc}</p>
+    </div>
+
+    <div class="portfolio-grid">
+      {projects.map((p, i) => (
+        <a href={`/portfolio/${p.id}`} class={`portfolio-card glass-card glass-card-portfolio reveal delay-${(i%3)*100 + 100}`}>
+          <div class="img-wrapper">
+             <div class="overlay">
+               <span class="view-btn btn btn-primary">Lihat Proyek</span>
+             </div>
+             <img src={p.img} alt={p.title} loading="lazy" />
+          </div>
+          <div class="content">
+            <span class="category text-gradient" style="font-size: 0.8rem;">{p.category}</span>
+            <h3 style="font-size: 1.25rem; font-weight: 600; line-height: 1.3;">{p.title}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+    <div class="text-center" style="margin-top: 4rem; text-align: center;">
+       <a href="/portfolio" class="btn btn-outline">Lihat Semua Portfolio</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-header {
+    margin-bottom: 4rem;
+  }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  
+  .portfolio-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .img-wrapper {
+    width: 100%;
+    height: 250px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--tr-smooth);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--tr-fast);
+    z-index: 10;
+  }
+
+  .portfolio-card:hover .overlay {
+    opacity: 1;
+  }
+  
+  .portfolio-card:hover .img-wrapper img {
+    transform: scale(1.05);
+  }
+
+  .view-btn {
+    transform: translateY(20px);
+    transition: transform var(--tr-smooth);
+  }
+
+  .portfolio-card:hover .view-btn {
+    transform: translateY(0);
+  }
+
+  .category {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .content .title-md {
+    font-size: 1.5rem;
+  }
+</style>

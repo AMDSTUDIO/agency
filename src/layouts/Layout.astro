@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import { db, GlobalSetting } from 'astro:db';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+
+const { 
+  title = settings.seo_brand_title || 'Creative Agency', 
+  description = settings.seo_meta_desc || 'Modern Creative Agency providing high-quality digital solutions.' 
+} = Astro.props;
+
+// Dynamic title format logic: if a specific page title is passed that isn't the root brand title, append the site logo.
+const browserTitle = title === settings.seo_brand_title 
+  ? title 
+  : `${title} | ${settings.site_logo || 'Creative Studio'}`;
+---
+
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{browserTitle}</title>
+		<meta name="description" content={description} />
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+          return 'light';
+        }
+        return 'dark';
+      })();
+
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      window.localStorage.setItem('theme', theme);
+    </script>
+	</head>
+	<body>
+		<div class="bg-mesh"></div>
+		<Navbar />
+		<slot />
+		<Footer />
+
+    <script>
+      // Scroll Reveal Animation (Intersection Observer)
+      document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => observer.observe(el));
+      });
+    </script>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { db, Service, Portfolio, Testimonial, Blog } from 'astro:db';
+
+const services = await db.select().from(Service);
+const portfolios = await db.select().from(Portfolio);
+const blogs = await db.select().from(Blog);
+const testimonials = await db.select().from(Testimonial);
+---
+
+<DashboardLayout title="Statistik & Ikhtisar">
+  <div class="stats-grid">
+    <div class="stat-card glass-card">
+      <h3>Total Layanan</h3>
+      <span class="text-gradient stat-num">{services.length}</span>
+    </div>
+    <div class="stat-card glass-card">
+      <h3>Total Portfolio</h3>
+      <span class="text-gradient stat-num">{portfolios.length}</span>
+    </div>
+    <div class="stat-card glass-card">
+      <h3>Total Testimoni</h3>
+      <span class="text-gradient stat-num">{testimonials.length}</span>
+    </div>
+    <div class="stat-card glass-card">
+      <h3>Total Artikel</h3>
+      <span class="text-gradient stat-num">{blogs.length}</span>
+    </div>
+  </div>
+
+  <div class="welcome-box glass-card" style="margin-top: 2rem;">
+    <h2>Selamat Datang di CMS Studio!</h2>
+    <p class="text-muted" style="margin-top: 1rem; line-height: 1.6;">
+      Gunakan panel di sebelah kiri untuk mengelola entri database Anda. Ini adalah CMS berbasis Astro DB lokal, sangat cepat dan efisien.
+      Semua perubahan akan langsung terhubung ke rute statis web utama.
+    </p>
+  </div>
+</DashboardLayout>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .stat-card {
+    padding: 2rem;
+    text-align: center;
+  }
+  .stat-card h3 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .stat-num {
+    font-size: 3rem;
+    font-weight: 700;
+  }
+</style>

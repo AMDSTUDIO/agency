@@ -1,0 +1,93 @@
+---
+// Testimonials.astro
+import { db, Testimonial, GlobalSetting } from 'astro:db';
+
+const testimonials = await db.select().from(Testimonial);
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+---
+<section id="testimonials" class="section testimonials">
+  <div class="container">
+    <div class="section-header text-center" style="margin-bottom: 4rem; text-align: center;">
+      <h2 class="title-lg" set:html={settings.testimonials_title} />
+      <p class="text-muted" style="margin-top: 1rem;">{settings.testimonials_desc}</p>
+    </div>
+
+    <div class="testimo-grid">
+      {testimonials.map((t, i) => (
+        <a href={`/testimonials/${t.id}`} class={`glass-card testimo-card glass-card-testimo reveal delay-${(i%3)*100 + 100}`} style="text-decoration:none; color:inherit;">
+          <div class="quote-mark">"</div>
+          <p class="content">{t.content}</p>
+          <div class="author">
+            <img src={t.avatar} alt={t.name} loading="lazy" />
+            <div class="author-info">
+              <h4>{t.name}</h4>
+              <span class="text-muted">{t.role}</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+    <div class="text-center" style="margin-top: 4rem; text-align: center;">
+       <a href="/testimonials" class="btn btn-outline">Lihat Semua Testimoni</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .testimo-card {
+    position: relative;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .quote-mark {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    font-size: 5rem;
+    font-family: Georgia, serif;
+    color: rgba(255, 255, 255, 0.05);
+    line-height: 1;
+  }
+
+  .content {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 2;
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .author img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+  }
+
+  .author h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .author span {
+    font-size: 0.85rem;
+  }
+</style>

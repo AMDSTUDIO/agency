@@ -1,0 +1,28 @@
+---
+import { db, Service } from 'astro:db';
+import Layout from '../../layouts/Layout.astro';
+
+const services = await db.select().from(Service);
+---
+
+<Layout title="Semua Layanan Anda" description="Daftar lengkap layanan dari agensi kami.">
+  <div class="container" style="padding-top: 8rem; padding-bottom: 4rem;">
+    <div class="section-header text-center" style="margin-bottom: 4rem;">
+      <h1 class="title-xl">Layanan <span class="text-gradient">Utama Kami</span></h1>
+      <p class="text-muted" style="margin-top: 1rem; max-width:600px; margin-left:auto; margin-right:auto;">Eksplorasi selengkapnya kapabilitas kami di berbagai disiplin teknologi dan bisnis.</p>
+    </div>
+
+    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      {services.map(s => (
+        <div class="glass-card service-card">
+          <div class="icon-wrapper" style={`background: ${s.color}20; color: ${s.color}; width:60px; height:60px; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:2rem; margin-bottom:1.5rem;`}>
+            {s.icon}
+          </div>
+          <h3 class="title-md" style="margin-bottom: 1rem;">{s.title}</h3>
+          <p class="text-muted" style="margin-bottom: 1.5rem; line-height:1.6;">{s.desc.substring(0, 100)}...</p>
+          <a href={`/services/${s.id}`} class="btn btn-outline" style={`border-color: ${s.color}; color: white; display:inline-block;`}>Selengkapnya</a>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>

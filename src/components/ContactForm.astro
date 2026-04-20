@@ -1,0 +1,87 @@
+---
+import { db, Message, Service } from 'astro:db';
+
+const servicesResult = await db.select().from(Service);
+
+let success = false;
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  const name = data.get("name") as string;
+  const email = data.get("email") as string;
+  const service = data.get("service") as string;
+  const content = data.get("content") as string;
+  
+  const id = "msg_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+  const created_at = new Date();
+
+  try {
+    await db.insert(Message).values({ id, name, email, service, content, created_at });
+    success = true;
+  } catch (e) {
+    console.error(e);
+    error = "Gagal mengirimkan pesan. Mohon coba lagi nanti.";
+  }
+}
+---
+
+<section id="cta" class="section cta" style="padding-top: 6rem; padding-bottom: 6rem; position: relative;">
+  <div class="container" style="max-width: 800px; margin: 0 auto;">
+    
+    <div class="section-header text-center" style="margin-bottom: 3rem;">
+      <h2 class="title-lg">Mulai Proyek <span class="text-gradient">Sekarang</span></h2>
+      <p class="text-muted" style="margin-top: 1rem;">Sudah punya wawasan yang mantap? Diskusikan ide Anda bersama Konsultan Digital kami dan raih penawaran esklusif secara gratis.</p>
+    </div>
+
+    <div class="glass-card" style="padding: 3rem; background: rgba(20, 25, 35, 0.6); backdrop-filter: blur(20px);">
+      
+      {success && (
+        <div style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(16, 185, 129, 0.4); text-align: center;">
+          <h3 style="margin-bottom: 0.5rem;">Terima Kasih, {Astro.request.method === 'POST' ? '!' : ''}</h3>
+          <p>Pesan Anda telah kami rekam! Tim spesialis kami akan mengevaluasi kebutuhan Anda dan menghubungi kembali secepatnya melalui email.</p>
+        </div>
+      )}
+
+      {error && (
+        <div style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+          {error}
+        </div>
+      )}
+
+      {!success && (
+        <form method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="form-group">
+              <label class="form-label">Nama Lengkap</label>
+              <input type="text" name="name" class="form-input" required placeholder="Jhon Doe" />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Alamat Email Bisnis</label>
+              <input type="email" name="email" class="form-input" required placeholder="nama@perusahaan.com" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Layanan yang Diperlukan</label>
+            <select name="service" class="form-input" style="color: white; background: rgba(0,0,0,0.5);" required>
+              <option value="" disabled selected>Pilih Layanan Konsultasi...</option>
+              {servicesResult.map((s) => (
+                <option value={s.title}>{s.title}</option>
+              ))}
+              <option value="Lainnya">Kebutuhan Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Jelaskan Ide / Rencana Anda</label>
+            <textarea name="content" class="form-input" rows="5" required placeholder="Ceritakan brief rancangan kebutuhan proyek dan apa target pasar yang ingin Anda tuju..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="padding: 1.2rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem; width: 100%;">🚀 Kirim Pertanyaan & Request Penawaran</button>
+        </form>
+      )}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,157 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { db, GlobalSetting, eq } from 'astro:db';
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  
+  // Update logic: since it's key-value, we loop over all entries in the form
+  // and update or insert them. Or simply loop through what we care about.
+  for (const [key, value] of formData.entries()) {
+    if (typeof value === 'string' && key !== 'action') {
+      try {
+        const exist = await db.select().from(GlobalSetting).where(eq(GlobalSetting.key, key));
+        if (exist.length > 0) {
+          await db.update(GlobalSetting).set({ value }).where(eq(GlobalSetting.key, key));
+        } else {
+          await db.insert(GlobalSetting).values({ key, value });
+        }
+      } catch(e) {
+        console.error("Error saving setting:", key, e);
+      }
+    }
+  }
+}
+
+// Fetch all settings
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+
+const hero_title_default = "Membangun Masa Depan <br/>\n<span class=\"text-gradient\">Digital & Bisnis</span>";
+const services_title_default = "Layanan <span class=\"text-gradient\">Kami</span>";
+---
+
+<DashboardLayout title="Pengaturan Global Situs">
+  <div class="glass-card" style="max-width: 900px;">
+    <h3 class="title-md" style="margin-bottom: 2rem; font-size: 1.3rem;">Editor Konten Otomatis</h3>
+    <p class="text-muted" style="margin-bottom: 2rem;">Perbarui logo, teks *hero*, dan pengaturan situs secara global di sini. Tag HTML seperti <code>&lt;br&gt;</code> (garis baru) atau <code>&lt;span class="text-gradient"&gt;</code> diperbolehkan untuk menjaga *styling*.</p>
+    
+    <form method="POST">
+      <!-- Nav & Footer Brand -->
+      <h4 style="margin-bottom: 1rem; color: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Informasi Dasar</h4>
+      
+      <div class="form-group">
+        <label class="form-label">Nama Logo / Brand</label>
+        <input type="text" name="site_logo" class="form-input" value={settings.site_logo || "Creative Studio"} />
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Deskripsi Brand Footer</label>
+        <textarea name="footer_desc" class="form-input" rows="2">{settings.footer_desc || "Partner digital..."}</textarea>
+      </div>
+
+      <div style="display:flex; gap:1rem;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Alamat Kantor</label>
+          <input type="text" name="footer_address" class="form-input" value={settings.footer_address || ""} />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Alamat Email</label>
+          <input type="email" name="footer_email" class="form-input" value={settings.footer_email || ""} />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Nomor WhatsApp</label>
+          <input type="text" name="whatsapp_number" class="form-input" value={settings.whatsapp_number || "085163219924"} />
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1rem;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">SEO Title (Judul Tab Utama)</label>
+          <input type="text" name="seo_brand_title" class="form-input" value={settings.seo_brand_title || "Creative Agency - Jasa Pembuatan Website & Digital Marketing"} />
+        </div>
+        <div class="form-group" style="flex:2;">
+          <label class="form-label">SEO Meta Description (Google Deskripsi)</label>
+          <input type="text" name="seo_meta_desc" class="form-input" value={settings.seo_meta_desc || "Konsultan rancang bangun piranti lunak, ekosistem website..."} />
+        </div>
+      </div>
+
+      <br/>
+      <h4 style="margin-bottom: 1rem; color: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Hero Section Menu Utama</h4>
+      
+      <div class="form-group">
+        <label class="form-label">Lencana / Badge</label>
+        <input type="text" name="hero_badge" class="form-input" value={settings.hero_badge || "🔥 DIGITAL & BISNIS"} />
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Judul Utama (HTML diizinkan)</label>
+        <textarea name="hero_title" class="form-input" rows="3">{settings.hero_title || hero_title_default}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Deskripsi Sub-Judul Hero</label>
+        <textarea name="hero_desc" class="form-input" rows="3">{settings.hero_desc || ""}</textarea>
+      </div>
+      
+      <div style="display:flex; gap:1rem;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Teks Tombol Aksi 1</label>
+          <input type="text" name="hero_btn_primary" class="form-input" value={settings.hero_btn_primary || "Mulai Proyek Anda"} />
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">Teks Tombol Aksi 2</label>
+          <input type="text" name="hero_btn_secondary" class="form-input" value={settings.hero_btn_secondary || "Lihat Layanan"} />
+        </div>
+      </div>
+
+      <br/>
+      <h4 style="margin-bottom: 1rem; color: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Judul Pembuka Tiap Bagian (Section Headers)</h4>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+        <div>
+           <label class="form-label">Judul Layanan</label>
+           <input type="text" name="services_title" class="form-input" value={settings.services_title || services_title_default} />
+        </div>
+        <div>
+           <label class="form-label">Deskripsi Layanan</label>
+           <textarea name="services_desc" class="form-input" rows="2">{settings.services_desc || ""}</textarea>
+        </div>
+
+        <div>
+           <label class="form-label">Judul Portofolio</label>
+           <input type="text" name="portfolio_title" class="form-input" value={settings.portfolio_title || "Portfolio <span class=\"text-gradient\">Unggulan</span>"} />
+        </div>
+        <div>
+           <label class="form-label">Deskripsi Portofolio</label>
+           <textarea name="portfolio_desc" class="form-input" rows="2">{settings.portfolio_desc || ""}</textarea>
+        </div>
+
+        <div>
+           <label class="form-label">Judul Testimoni</label>
+           <input type="text" name="testimonials_title" class="form-input" value={settings.testimonials_title || "Apa Kata <span class=\"text-gradient\">Klien Kami</span>"} />
+        </div>
+        <div>
+           <label class="form-label">Deskripsi Testimoni</label>
+           <textarea name="testimonials_desc" class="form-input" rows="2">{settings.testimonials_desc || ""}</textarea>
+        </div>
+
+        <div>
+           <label class="form-label">Judul Artikel Blog</label>
+           <input type="text" name="blog_title" class="form-input" value={settings.blog_title || "Artikel & <span class=\"text-gradient\">Wawasan</span>"} />
+        </div>
+        <div>
+           <label class="form-label">Deskripsi Artikel Blog</label>
+           <textarea name="blog_desc" class="form-input" rows="2">{settings.blog_desc || ""}</textarea>
+        </div>
+      </div>
+      
+      <br/>
+      <div style="margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 12px; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);">
+          💾 Simpan Semua Pengaturan
+        </button>
+      </div>
+    </form>
+  </div>
+</DashboardLayout>

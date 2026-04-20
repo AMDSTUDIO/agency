@@ -1,0 +1,290 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+
+const currentRole = Astro.cookies.get("admin_role")?.value || 'Guest';
+const currentUser = Astro.cookies.get("admin_username")?.value || 'Guest';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title} | CMS Dashboard</title>
+	</head>
+	<body class="dashboard-body">
+    <div class="bg-mesh"></div>
+    
+    <div class="dashboard-wrapper">
+      <aside class="sidebar glass">
+        <div class="sidebar-header">
+          <h2 class="text-gradient" style="font-family: var(--font-heading); font-size: 1.5rem;">CMS Panel</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li><a href="/dashboard">Overview</a></li>
+            <li><a href="/dashboard/services">Layanan</a></li>
+            <li><a href="/dashboard/portfolio">Portfolio</a></li>
+            <li><a href="/dashboard/testimonials">Testimoni</a></li>
+            <li><a href="/dashboard/blog">Website Blog</a></li>
+            <li style="margin-top:1rem;"><a href="/dashboard/inbox" style="color: #38bdf8; font-weight:bold;">📥 Kotak Masuk</a></li>
+            <li style="margin-top:1rem;"><a href="/dashboard/settings" style="color:var(--primary); font-weight:bold;">⚙️ Pengaturan Situs</a></li>
+            <li style="margin-top:0.5rem;">
+               <form method="POST" action="/api/logout" style="display:inline;">
+                 <button type="submit" style="background:transparent; border:none; color:rgba(239, 68, 68, 0.8); cursor:pointer; font-size:1rem; font-weight:bold;">🚪 Keluar (Logout)</button>
+               </form>
+            </li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="/" class="btn btn-outline" style="width: 100%; border-color: rgba(255,255,255,0.1); font-size:0.85rem;">Kembali ke Web</a>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <header class="dashboard-header glass">
+          <h1 class="title-md">{title}</h1>
+          <div class="admin-profile" style="display: flex; align-items: center; gap: 1rem;">
+            <div style="text-align: right;">
+              <span style="display: block; font-weight: 600;">{currentUser}</span>
+              <span class="text-muted" style="font-size: 0.8rem;">Role: {currentRole}</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="dashboard-content">
+          <slot />
+        </div>
+      </main>
+    </div>
+	</body>
+</html>
+
+<style>
+  .dashboard-body {
+    overflow: hidden; /* Prevent body scroll, let content scroll */
+  }
+
+  .dashboard-wrapper {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+
+  /* Dashboard Layout Styling */
+  .dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #0f1219;
+    color: white;
+  }
+
+  .dashboard-sidebar {
+    width: 280px;
+    background: rgba(20, 25, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 2rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar-nav {
+    padding: 1.5rem 1rem;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sidebar-nav a, .sidebar-nav button {
+    display: block;
+    padding: 1rem 1.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: left;
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+
+  .sidebar-nav a:hover, .sidebar-nav button:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateX(4px);
+  }
+
+  .sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .dashboard-main {
+    flex: 1;
+    margin-left: 280px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent 40%),
+                radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent 40%);
+  }
+
+  .dashboard-header {
+    padding: 1.5rem 3rem;
+    background: rgba(20, 25, 35, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .dashboard-content {
+    padding: 3rem;
+    flex: 1;
+  }
+
+  /* Admin Table Styling */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: rgba(20, 25, 35, 0.6);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 1rem;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .admin-table th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .admin-table td {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+  }
+
+  .admin-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .action-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .action-btn.danger {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .action-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.4);
+  }
+
+  /* Form Elements standard styling for dashboard */
+  :global(.form-group) {
+    margin-bottom: 1.5rem;
+  }
+  :global(.form-label) {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  :global(.form-input) {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    color: var(--fg);
+    font-family: inherit;
+    transition: border-color var(--tr-fast);
+  }
+  :global(.form-input:focus) {
+    outline: none;
+    border-color: var(--primary);
+  }
+  :global(.table-container) {
+    overflow-x: auto;
+  }
+  :global(.admin-table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  :global(.admin-table th), :global(.admin-table td) {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  :global(.admin-table th) {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  :global(.action-btn) {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+  }
+  :global(.action-btn.danger) {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+  }
+</style>

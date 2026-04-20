@@ -1,0 +1,378 @@
+/* 
+  Modern Design System 
+  Focus on: Lightweight, High Performance, Glassmorphism, Premium Dark & Purple/Blue Theme
+*/
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  /* HSL Colors */
+  --c-bg-h: 222;
+  --c-bg-s: 47%;
+  --c-bg-l: 11%;
+  
+  --c-fg-h: 210;
+  --c-fg-s: 40%;
+  --c-fg-l: 98%;
+
+  --c-primary-h: 252;
+  --c-primary-s: 85%;
+  --c-primary-l: 60%;
+  
+  --c-secondary-h: 199;
+  --c-secondary-s: 89%;
+  --c-secondary-l: 48%;
+
+  /* Variables */
+  --bg: hsl(var(--c-bg-h), var(--c-bg-s), var(--c-bg-l));
+  --fg: hsl(var(--c-fg-h), var(--c-fg-s), var(--c-fg-l));
+  --primary: hsl(var(--c-primary-h), var(--c-primary-s), var(--c-primary-l));
+  --secondary: hsl(var(--c-secondary-h), var(--c-secondary-s), var(--c-secondary-l));
+
+  --glass-bg: rgba(25, 30, 45, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  
+  --glass-card-bg: linear-gradient(145deg, rgba(30, 35, 55, 0.7) 0%, rgba(20, 25, 40, 0.4) 100%);
+  --glass-card-border: rgba(255, 255, 255, 0.05);
+  --hero-overlay: rgba(10, 15, 25, 0.1);
+
+  /* Typography */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Transitions */
+  --tr-fast: 0.2s ease;
+  --tr-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme="light"] {
+  --c-bg-h: 210;
+  --c-bg-s: 30%;
+  --c-bg-l: 98%;
+  
+  --c-fg-h: 222;
+  --c-fg-s: 47%;
+  --c-fg-l: 15%;
+
+  --text-muted: hsl(222, 15%, 45%);
+
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  
+  --glass-card-bg: linear-gradient(145deg, rgba(255, 255, 255, 1) 0%, rgba(240, 245, 255, 0.9) 100%);
+  --glass-card-border: rgba(0, 0, 0, 0.05);
+  --hero-overlay: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="light"] .logo img,
+:root[data-theme="light"] .footer-brand img {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}
+
+.glass-card {
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-card-border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: transform var(--tr-smooth), box-shadow var(--tr-smooth), background var(--tr-fast), border var(--tr-fast);
+}
+
+.glass-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px -10px rgba(0,0,0,0.5), 0 0 20px -5px var(--primary);
+  border-color: var(--primary);
+}
+
+/* Typography Utilities */
+.text-gradient {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.title-xl {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.title-lg {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.title-md {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.text-muted {
+  color: var(--fg);
+  opacity: 0.7;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.8rem;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--tr-fast);
+  border: none;
+  font-family: var(--font-body);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #8162ff);
+  color: white; /* Button text is always white */
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+}
+
+/* Containers */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section {
+  padding: 6rem 0;
+}
+
+/* Background Patterns */
+.bg-mesh {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+}
+
+/* Color-Coded Glass Cards */
+.glass-card-services {
+  border-bottom: 2px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.05);
+}
+.glass-card-services:hover {
+  border-color: rgba(56, 189, 248, 0.8);
+  box-shadow: 0 16px 40px rgba(56, 189, 248, 0.2);
+}
+
+.glass-card-portfolio {
+  border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.05);
+}
+.glass-card-portfolio:hover {
+  border-color: rgba(139, 92, 246, 0.8);
+  box-shadow: 0 16px 40px rgba(139, 92, 246, 0.2);
+}
+
+.glass-card-testimo {
+  border-bottom: 2px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.05);
+}
+.glass-card-testimo:hover {
+  border-color: rgba(16, 185, 129, 0.8);
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.2);
+}
+
+.glass-card-blog {
+  border-bottom: 2px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.05);
+}
+.glass-card-blog:hover {
+  border-color: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 16px 40px rgba(245, 158, 11, 0.2);
+}
+
+/* Reveal Animation Utilities */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+
+/* Forms */
+.form-group {
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 15, 25, 0.4);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  outline: none;
+  transition: all var(--tr-fast);
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  background: rgba(10, 15, 25, 0.7);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* 📱 MOBILE RESPONSIVENESS OVERRIDES */
+@media (max-width: 768px) {
+  .section {
+    padding: 3.5rem 0;
+  }
+  
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .title-xl {
+    font-size: clamp(2.2rem, 8vw, 3rem) !important;
+  }
+
+  .title-lg {
+    font-size: clamp(1.8rem, 6vw, 2.5rem) !important; 
+    margin-bottom: 1rem !important;
+  }
+
+  .title-md {
+    font-size: clamp(1.4rem, 4vw, 1.8rem) !important;
+  }
+
+  .glass-card {
+    padding: 1.5rem !important;
+  }
+
+  .btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  p {
+    font-size: 0.95rem !important;
+  }
+
+  /* Specific Components that were too big */
+  .section-header {
+    margin-bottom: 2.5rem !important;
+  }
+
+  /* Contact Form Stacking on Mobile */
+  form > div[style*="display: grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* 📱 TINY MOBILE EXTRAS */
+@media (max-width: 480px) {
+  .title-xl {
+    font-size: 2rem !important;
+  }
+  .portfolio-hero, .testimo-hero, .blog-hero, .service-hero {
+    height: auto !important;
+    min-height: 50vh !important;
+    padding-top: 6rem !important;
+  }
+  .article-container {
+    padding-top: 1.5rem !important;
+    padding-bottom: 3.5rem !important;
+  }
+}

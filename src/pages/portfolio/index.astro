@@ -1,0 +1,29 @@
+---
+import { db, Portfolio } from 'astro:db';
+import Layout from '../../layouts/Layout.astro';
+
+const projects = await db.select().from(Portfolio);
+---
+
+<Layout title="Katalog Portfolio Kami">
+  <div class="container" style="padding-top: 8rem; padding-bottom: 4rem;">
+    <div class="section-header text-center" style="margin-bottom: 4rem;">
+      <h1 class="title-xl">Portfolio <span class="text-gradient">Unggulan</span></h1>
+      <p class="text-muted" style="margin-top: 1rem;">Lihat daftar lengkap mahakarya digital yang pernah kami kerjakan.</p>
+    </div>
+
+    <div class="portfolio-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+      {projects.map(p => (
+        <a href={`/portfolio/${p.id}`} class="portfolio-card glass-card" style="display:block; text-decoration:none; color:inherit; padding: 1.5rem; border-radius: 20px;">
+          <div style="width: 100%; height: 250px; overflow: hidden; border-radius: 12px; margin-bottom: 1.5rem;">
+             <img src={p.img} alt={p.title} loading="lazy" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div>
+            <span class="category text-gradient" style="font-weight: bold; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.05em;">{p.category}</span>
+            <h3 style="margin-top:0.5rem; font-size: 1.25rem; font-weight: 600; line-height: 1.3;">{p.title}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>

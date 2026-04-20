@@ -1,0 +1,97 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { db, Testimonial, eq } from 'astro:db';
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const act = formData.get('action');
+
+  if (act === 'delete') {
+    const id = formData.get('id') as string;
+    await db.delete(Testimonial).where(eq(Testimonial.id, id));
+  } else if (act === 'create') {
+    const id = formData.get('id') as string;
+    const name = formData.get('name') as string;
+    const role = formData.get('role') as string;
+    const avatar = formData.get('avatar') as string;
+    const content = formData.get('content') as string;
+
+    try {
+      await db.insert(Testimonial).values({ id, name, role, avatar, content });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+
+const testimonials = await db.select().from(Testimonial);
+---
+
+<DashboardLayout title="Manajemen Testimoni">
+  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    
+    <div class="glass-card">
+      <h3 class="title-md" style="margin-bottom: 1.5rem; font-size: 1.2rem;">Tambah Testimoni</h3>
+      
+      <form method="POST">
+        <input type="hidden" name="action" value="create"/>
+        
+        <div class="form-group">
+          <label class="form-label">ID Unik</label>
+          <input type="text" name="id" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nama Klien</label>
+          <input type="text" name="name" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Jabatan & Perusahaan</label>
+          <input type="text" name="role" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">URL Foto / Avatar</label>
+          <input type="url" name="avatar" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Isi Testimoni</label>
+          <textarea name="content" class="form-input" rows="4" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Testimoni</button>
+      </form>
+    </div>
+
+    <div class="glass-card table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Avatar</th>
+            <th>Klien</th>
+            <th>Ulasan</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {testimonials.map(t => (
+            <tr>
+              <td><img src={t.avatar} alt={t.name} width="40" style="border-radius:50%;" /></td>
+              <td><strong>{t.name}</strong><br/><small class="text-muted">{t.role}</small></td>
+              <td><small>{t.content.substring(0, 50)}...</small></td>
+              <td>
+                <form method="POST" style="display:inline;" onsubmit="return confirm('Hapus testimoni ini?');">
+                  <input type="hidden" name="action" value="delete"/>
+                  <input type="hidden" name="id" value={t.id}/>
+                  <button class="action-btn danger">Hapus</button>
+                </form>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</DashboardLayout>

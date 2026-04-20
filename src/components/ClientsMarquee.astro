@@ -1,0 +1,77 @@
+---
+// ClientsMarquee.astro
+const clients = [
+  "GlobalBank", "StarMedia", "Innovate.AI", "TechWave", "EduCorp", "MetaCo",
+  "GlobalBank", "StarMedia", "Innovate.AI", "TechWave", "EduCorp", "MetaCo" // duplicated for smooth scroll
+];
+---
+<div class="marquee-wrapper">
+  <p class="marquee-title text-muted" style="display: block; width: 100%; text-align: center; font-size: 0.85rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">DIpercaya oleh berbagai perusahaan</p>
+  <div class="marquee">
+    <div class="marquee-content">
+      {clients.map(client => (
+        <div class="client-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem; opacity:0.7"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          {client}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .marquee-wrapper {
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+  }
+  
+  .marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100%;
+    /* Gradient masks for smooth fade on edges */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #fff 10%, #fff 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #fff 10%, #fff 90%, transparent);
+  }
+
+  .marquee-content {
+    display: inline-flex;
+    animation: scroll 30s linear infinite;
+  }
+
+  .marquee:hover .marquee-content {
+    animation-play-state: paused;
+  }
+
+  .client-logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin: 0 3rem;
+    transition: all 0.3s ease;
+    cursor: default;
+    filter: grayscale(100%);
+  }
+
+  .client-logo:hover {
+    color: var(--fg);
+    opacity: 1;
+    filter: grayscale(0%) drop-shadow(0 0 10px var(--glass-border));
+    transform: scale(1.1);
+  }
+
+  /* When the marquee is hovered, dim the non-hovered logos even more for contrast */
+  .marquee:hover .client-logo:not(:hover) {
+    opacity: 0.3;
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>

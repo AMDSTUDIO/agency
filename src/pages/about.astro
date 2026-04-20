@@ -1,0 +1,84 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CtaSection from '../components/CtaSection.astro';
+import { db, GlobalSetting } from 'astro:db';
+
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+---
+<Layout title="Tentang Kami - Tim dan Filosofi">
+  <div class="about-hero reveal" style={`background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat; height: 60vh; min-height: 400px; display: flex; align-items: flex-end; position: relative;`}>
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg) 0%, var(--hero-overlay) 100%);"></div>
+    <div class="container" style="position: relative; z-index: 2; padding-bottom: 4rem;">
+      <span class="category" style={`font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: inline-block; background: var(--bg); padding: 0.5rem 1rem; border-radius: 8px; color: var(--fg); box-shadow: 0 4px 15px rgba(0,0,0,0.1);`}>Kenali Kami</span>
+      <h1 class="title-xl" style="font-size: clamp(2.5rem, 6vw, 4rem); max-width: 900px; margin-bottom: 1rem;">Lebih dari Sekadar Agensi. Kami adalah Ekstensi Bisnis Anda.</h1>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container" style="max-width: 900px; margin: 0 auto;">
+      <div class="prose body-text reveal delay-100" style="font-size: 1.15rem; line-height: 1.9; color: var(--text-muted); opacity: 0.85; text-align: center; margin-bottom: 4rem;">
+        <h2 style="color: var(--fg); font-size: 2rem; margin-bottom: 1.5rem;">Visi & Misi Kami</h2>
+        <p style="color: var(--fg);">
+          Di {settings.site_logo}, filosofi kami teramat sederhana: <strong>Teknologi tidak berarti apa-apa tanpa arsitektur manusiawi.</strong> Kami tidak hanya merakit baris kode atau merancang antarmuka indah secara buta. Kami membangun terowongan konversi yang diraih lewat peleburan observasi psikologis mendalam dengan standar performa sistem tercepat di jagat internet modern.
+        </p>
+      </div>
+
+      <div class="stats-row reveal delay-200" style="display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 6rem;">
+        <div class="glass-card" style="flex:1; text-align:center; padding: 2rem;">
+          <h3 class="text-gradient" style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">5+</h3>
+          <span class="text-muted">Tahun Pengalaman Global</span>
+        </div>
+        <div class="glass-card" style="flex:1; text-align:center; padding: 2rem;">
+          <h3 class="text-gradient" style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">120</h3>
+          <span class="text-muted">Platform Berhasil Diluncurkan</span>
+        </div>
+        <div class="glass-card" style="flex:1; text-align:center; padding: 2rem;">
+          <h3 class="text-gradient" style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">99%</h3>
+          <span class="text-muted">Kepuasan Umpan Balik Klien</span>
+        </div>
+      </div>
+      
+      <div class="process-section text-center" style="margin-top: 6rem;">
+        <h2 style="color: var(--fg); font-size: 2rem; margin-bottom: 3rem;" class="reveal">Proses Rekayasa Kami</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; position: relative;">
+          
+          <div class={`glass-card reveal delay-100`} style="padding: 2rem; text-align: left; border-top: 3px solid rgba(56, 189, 248, 0.5);">
+            <div style="font-size: 2.5rem; color: rgba(56, 189, 248, 0.8); font-weight: 800; opacity: 0.5; margin-bottom: 1rem;">01</div>
+            <h4 style="font-size: 1.25rem; color: var(--fg); margin-bottom: 0.5rem;">Eksplorasi & Audit</h4>
+            <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6;">Kami menyelami lanskap bisnis Anda untuk menemukan hambatan utama yang Anda lewatkan.</p>
+          </div>
+
+          <div class={`glass-card reveal delay-200`} style="padding: 2rem; text-align: left; border-top: 3px solid rgba(139, 92, 246, 0.5);">
+            <div style="font-size: 2.5rem; color: rgba(139, 92, 246, 0.8); font-weight: 800; opacity: 0.5; margin-bottom: 1rem;">02</div>
+            <h4 style="font-size: 1.25rem; color: var(--fg); margin-bottom: 0.5rem;">Strategi Arsitektur</h4>
+            <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6;">Merancang kerangka dasar antarmuka pengguna berbasis sains psikologi konversi audiens.</p>
+          </div>
+
+          <div class={`glass-card reveal delay-300`} style="padding: 2rem; text-align: left; border-top: 3px solid rgba(245, 158, 11, 0.5);">
+            <div style="font-size: 2.5rem; color: rgba(245, 158, 11, 0.8); font-weight: 800; opacity: 0.5; margin-bottom: 1rem;">03</div>
+            <h4 style="font-size: 1.25rem; color: var(--fg); margin-bottom: 0.5rem;">Rekayasa Kode</h4>
+            <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6;">Menerjemahkan prototipe menjadi sistem kode nyata dengan teknologi mutakhir yang anti lelet.</p>
+          </div>
+
+          <div class={`glass-card reveal delay-400`} style="padding: 2rem; text-align: left; border-top: 3px solid rgba(16, 185, 129, 0.5);">
+            <div style="font-size: 2.5rem; color: rgba(16, 185, 129, 0.8); font-weight: 800; opacity: 0.5; margin-bottom: 1rem;">04</div>
+            <h4 style="font-size: 1.25rem; color: var(--fg); margin-bottom: 0.5rem;">Peluncuran & Skala</h4>
+            <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6;">Merilis produk akhir, memonitor performa trafik, dan menaikkan skala infrastruktur.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaSection />
+</Layout>
+
+<style>
+  @media (max-width: 768px) {
+    .stats-row .glass-card {
+      min-width: 100%;
+    }
+  }
+</style>

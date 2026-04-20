@@ -1,0 +1,33 @@
+---
+import { db, Blog, desc } from 'astro:db';
+import Layout from '../../layouts/Layout.astro';
+
+const articles = await db.select().from(Blog).orderBy(desc(Blog.date));
+---
+
+<Layout title="Kumpulan Artikel Blog">
+  <div class="container" style="padding-top: 8rem; padding-bottom: 4rem;">
+    <div class="section-header text-center" style="margin-bottom: 4rem;">
+      <h1 class="title-xl">Artikel & <span class="text-gradient">Wawasan</span></h1>
+      <p class="text-muted" style="margin-top: 1rem;">Kumpulan pemikiran, tutorial, dan rahasia industri dari para ahlinya.</p>
+    </div>
+
+    <div class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+      {articles.map(a => (
+        <a href={`/blog/${a.id}`} class="blog-card glass-card" style="padding:0; overflow:hidden; display:flex; flex-direction:column; text-decoration:none; color:inherit; border-radius:16px;">
+          <div class="img-wrapper" style="width:100%; height:200px;">
+            <img src={a.img} alt={a.title} loading="lazy" style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+          <div class="content" style="padding:1.5rem;">
+            <div class="meta" style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+              <span class="category text-gradient" style="font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">{a.category}</span>
+              <span class="date">{a.date.toLocaleDateString('id-ID')}</span>
+            </div>
+            <h3 class="title-md" style="font-size:1.25rem;">{a.title}</h3>
+            {a.excerpt && <p class="text-muted" style="margin-top:0.8rem; font-size:0.9rem;">{a.excerpt}</p>}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>

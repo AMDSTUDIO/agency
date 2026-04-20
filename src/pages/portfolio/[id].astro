@@ -1,0 +1,53 @@
+---
+import { db, Portfolio, eq } from 'astro:db';
+import Layout from '../../layouts/Layout.astro';
+
+const { id } = Astro.params;
+
+if (!id) return new Response("Not found", { status: 404 });
+
+const projects = await db.select().from(Portfolio).where(eq(Portfolio.id, id as string));
+const entry = projects[0];
+
+if (!entry) return new Response("Not found", { status: 404 });
+---
+
+<Layout title={entry.title}>
+  <div class="portfolio-hero" style={`background: url('${entry.img}') center/cover no-repeat; height: 60vh; min-height: 400px; display: flex; align-items: flex-end; position: relative;`}>
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg) 0%, var(--hero-overlay) 100%);"></div>
+    <div class="container" style="position: relative; z-index: 2; padding-bottom: 4rem;">
+      <span class="category" style="font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: inline-block; background: var(--bg); padding: 0.5rem 1rem; border-radius: 8px; color: var(--fg); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">{entry.category}</span>
+      <h1 class="title-xl" style="font-size: clamp(2rem, 5vw, 4rem); max-width: 900px; margin-bottom: 1rem;">{entry.title}</h1>
+      <div class="meta" style="display: flex; gap: 2rem; color: var(--fg); opacity: 0.8; font-size: 1rem;">
+        <span>Fokus: <strong>Product Design</strong></span>
+        <span>Metrik: <strong style="color: #34d399;">+245% ROI</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container article-container" style="padding-top: 3rem; padding-bottom: 6rem; max-width: 800px; margin: 0 auto;">
+    <a href="/portfolio" class="btn btn-outline back-btn" style="margin-bottom: 3rem;">&larr; Kembali ke Daftar Portfolio</a>
+    
+    <div class="prose body-text" style="font-size: 1.15rem; line-height: 1.9; color: var(--text-muted);">
+      <h3 style="color: var(--fg); font-size: 1.5rem; margin-bottom: 1rem;">Tinjauan Kasus</h3>
+      <p style="margin-bottom: 2rem;">{entry.title} meminta bantuan spesialis kami sesudah mengalami stagnasi trafik selama dua siklus fiskal. Analisis awal dari {entry.category} menemukan ada kemacetan dalam corong pengguna. Eksekusi ulang antarmuka memecahkan masalah navigasi dan kelelahan visual secara spontan.</p>
+        
+      <div class="glass-card" style="background: var(--glass-card-bg); border-left: 3px solid var(--primary); padding: 1.5rem 2rem; margin: 3rem 0; border-radius: 0 12px 12px 0;">
+         <p style="color: var(--fg); font-size: 1.25rem; font-style: italic; margin: 0;">"Evolusi digital karya tim sangat luar biasa, berhasil menyelamatkan citra merek kami dan meroketkan traksi interaksi di atas 245%."</p>
+         <span style="display: block; margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">&mdash; Manajemen Eksekutif Klien</span>
+      </div>
+      
+      <p style="margin-bottom: 2rem;">Kasus ini adalah bukti komitmen kami dalam mengedepankan kualitas sentuhan antar muka yang bukan hanya mengandalkan estetika, melainkan bertumpu pada perilaku metrik ilmiah audiens asli.</p>
+    </div>
+    
+    <div class="share-box" style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); text-align: center;">
+      <h4 style="margin-bottom: 1.5rem; color: var(--fg);">Terinspirasi untuk mencapai metrik ini?</h4>
+      <a href="/#cta" class="btn btn-primary" style="padding: 1.2rem 3rem; background: var(--primary); border-radius: 99px; font-weight: bold; font-size: 1.1rem;">Hubungi Kami Sekarang</a>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .prose p { margin-bottom: 1.5rem; }
+  .prose h2, .prose h3 { color: var(--fg); margin-top: 2.5rem; margin-bottom: 1rem; }
+</style>

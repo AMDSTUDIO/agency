@@ -1,0 +1,201 @@
+---
+// HeroSection.astro
+import { db, GlobalSetting } from 'astro:db';
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+---
+
+<section class="hero section">
+  <div class="container hero-container">
+    <div class="hero-content reveal">
+      <div class="badge glass">{settings.hero_badge || 'DIGITAL & BISNIS'}</div>
+      <h1 class="title-xl" set:html={settings.hero_title || 'Hero Title'} />
+      <p class="text-muted hero-desc">
+        {settings.hero_desc}
+      </p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary" style="background:var(--primary);">{settings.hero_btn_primary}</a>
+        <a href="#services" class="btn btn-outline">{settings.hero_btn_secondary}</a>
+      </div>
+    </div>
+    
+    <div class="hero-graphic reveal delay-200">
+      <div class="glass-card hero-card">
+        <div class="card-blob blob-1"></div>
+        <div class="card-blob blob-2"></div>
+        <div class="card-content">
+          <div class="mockup-header">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="mockup-body">
+            <div class="line w-full"></div>
+            <div class="line w-3/4"></div>
+            <div class="line w-1/2"></div>
+            <div class="stats">
+              <div class="stat-box glass">
+                <span class="stat-num text-gradient">99%</span>
+                <span class="stat-label">Performance</span>
+              </div>
+              <div class="stat-box glass">
+                <span class="stat-num text-gradient">24/7</span>
+                <span class="stat-label">Support</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 8rem;
+  }
+
+  .hero-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: var(--primary);
+  }
+
+  .title-xl {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-desc {
+    font-size: 1.125rem;
+    max-width: 500px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  /* Graphic / Mockup Styles */
+  .hero-graphic {
+    position: relative;
+    perspective: 1000px;
+  }
+
+  .hero-card {
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+    transform: rotateY(-15deg) rotateX(10deg);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .mockup-header {
+    display: flex;
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 1.5rem;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--glass-border);
+  }
+  .dot:nth-child(1) { background: #ff5f56; }
+  .dot:nth-child(2) { background: #ffbd2e; }
+  .dot:nth-child(3) { background: #27c93f; }
+
+  .line {
+    height: 12px;
+    background: var(--glass-border);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+  }
+  .w-full { width: 100%; }
+  .w-3\/4 { width: 75%; }
+  .w-1\/2 { width: 50%; }
+
+  .stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .stat-box {
+    flex: 1;
+    padding: 1.5rem;
+    text-align: center;
+    background: var(--glass-bg);
+  }
+
+  .stat-num {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  /* Blobs for dynamic light effects */
+  .card-blob {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: -1;
+  }
+
+  .blob-1 {
+    top: -20px;
+    left: -20px;
+    background: var(--primary);
+    opacity: 0.5;
+  }
+
+  .blob-2 {
+    bottom: -20px;
+    right: -20px;
+    background: var(--secondary);
+    opacity: 0.4;
+  }
+
+  @keyframes float {
+    0% { transform: rotateY(-15deg) rotateX(10deg) translateY(0px); }
+    50% { transform: rotateY(-12deg) rotateX(8deg) translateY(-20px); }
+    100% { transform: rotateY(-15deg) rotateX(10deg) translateY(0px); }
+  }
+
+  @media (max-width: 900px) {
+    .hero-container {
+      grid-template-columns: 1fr;
+    }
+    .hero-card {
+      transform: none;
+      animation: none;
+    }
+    .hero {
+      padding-top: 6rem;
+    }
+  }
+</style>

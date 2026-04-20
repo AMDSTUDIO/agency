@@ -1,0 +1,58 @@
+---
+import { db, User, eq } from 'astro:db';
+import '../../styles/global.css';
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  const username = data.get("username") as string;
+  const password = data.get("password") as string;
+
+  const users = await db.select().from(User).where(eq(User.username, username));
+  const user = users[0];
+
+  if (user && user.password === password) {
+    // Valid login
+    Astro.cookies.set("admin_role", user.role, { path: "/" });
+    Astro.cookies.set("admin_username", user.username, { path: "/" });
+    return Astro.redirect("/dashboard");
+  } else {
+    error = "Kredensial tidak valid.";
+  }
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>CMS Login | Creative Studio</title>
+	</head>
+	<body style="display:flex; justify-content:center; align-items:center; height:100vh; overflow:hidden;">
+    <div class="bg-mesh"></div>
+    
+    <div class="glass-card" style="width: 100%; max-width: 400px; padding: 3rem; text-align: center;">
+      <h2 class="title-md text-gradient" style="margin-bottom: 2rem;">CMS Dashboard</h2>
+      
+      {error && <div style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">{error}</div>}
+
+      <form method="POST" style="text-align: left;">
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Username</label>
+          <input type="text" name="username" required autocomplete="off" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; outline: none;"/>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 2rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Password</label>
+          <input type="password" name="password" required style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; outline: none;"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Masuk ke Sistem</button>
+      </form>
+      
+      <p class="text-muted" style="margin-top:2rem; font-size: 0.8rem;">Gunakan <strong style="color:var(--primary);">superadmin</strong> & password <strong style="color:var(--primary);">password123</strong> untuk simulasi role Super Admin.</p>
+    </div>
+	</body>
+</html>

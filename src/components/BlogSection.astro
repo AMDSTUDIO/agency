@@ -1,0 +1,104 @@
+---
+// BlogSection.astro
+import { db, Blog, desc, GlobalSetting } from 'astro:db';
+
+const articles = await db.select().from(Blog).orderBy(desc(Blog.date)).limit(3);
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+---
+<section id="blog" class="section blog">
+  <div class="container">
+    <div class="section-header text-center" style="margin-bottom: 4rem; text-align: center;">
+      <h2 class="title-lg" set:html={settings.blog_title} />
+      <p class="text-muted" style="margin-top: 1rem;">{settings.blog_desc}</p>
+    </div>
+
+    <div class="blog-grid">
+      {articles.map((a, i) => (
+        <a href={`/blog/${a.id}`} class={`blog-card glass-card glass-card-blog reveal delay-${(i%3)*100 + 100}`}>
+          <div class="img-wrapper">
+            <img src={a.img} alt={a.title} loading="lazy" />
+          </div>
+          <div class="content">
+            <div class="meta">
+              <span class="category">{a.category}</span>
+              <span class="date">{a.date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}</span>
+            </div>
+            <h3 class="title-md">{a.title}</h3>
+            {a.excerpt && <p class="text-muted" style="margin-top: 0.8rem; font-size: 0.9rem;">{a.excerpt}</p>}
+          </div>
+        </a>
+      ))}
+    </div>
+    <div class="text-center" style="margin-top: 4rem; text-align: center;">
+       <a href="/blog" class="btn btn-outline">Lihat Semua Artikel</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-header {
+    margin-bottom: 4rem;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+  }
+
+  .blog-card {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform var(--tr-smooth), box-shadow var(--tr-smooth);
+  }
+
+  .img-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--tr-smooth);
+  }
+
+  .blog-card:hover .img-wrapper img {
+    transform: scale(1.05);
+  }
+
+  .content {
+    padding: 1.5rem;
+  }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .category {
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .title-md {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+</style>

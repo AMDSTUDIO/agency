@@ -1,0 +1,280 @@
+---
+// Navbar.astro
+import { db, GlobalSetting } from 'astro:db';
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+---
+<header class="navbar">
+  <div class="container nav-container">
+    <a href="/" class="logo" style="display: flex; align-items: center;">
+      <img src="/logo.png" alt="Creative Divisions" style="height: 55px; width: auto;" />
+    </a>
+    
+    <nav class="nav-links desktop-only">
+      <a href="/about">Tentang Kami</a>
+      <a href="/services">Layanan</a>
+      <a href="/portfolio">Portfolio</a>
+      <a href="/testimonials">Testimoni</a>
+      <a href="/blog">Blog</a>
+    </nav>
+
+    <div class="nav-actions desktop-only">
+      <a href="/#cta" class="btn btn-primary" style="padding: 0.6rem 1.4rem; font-size: 0.9rem;">Hubungi Kami</a>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button id="theme-toggle" aria-label="Toggle Theme" class="theme-switch-premium">
+        <div class="switch-thumb">
+          <!-- Moon Icon (Dark Mode) -->
+          <svg class="icon moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <!-- Sun Icon (Light Mode) -->
+          <svg class="icon sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </div>
+      </button>
+
+      <button id="mobile-menu-btn" class="mobile-toggle" aria-label="Buka Menu Mobile">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-menu-overlay" class="mobile-nav-links">
+    <div class="mobile-nav-container">
+      <a href="/about" class="mobile-link">Tentang Kami</a>
+      <a href="/services" class="mobile-link">Layanan</a>
+      <a href="/portfolio" class="mobile-link">Portfolio</a>
+      <a href="/testimonials" class="mobile-link">Testimoni</a>
+      <a href="/blog" class="mobile-link">Blog</a>
+      <a href="/#cta" class="btn btn-primary" style="margin-top: 1rem; text-align: center;">Hubungi Kami</a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Mobile Menu Logic
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileOverlay = document.getElementById('mobile-menu-overlay');
+  
+  if (mobileBtn && mobileOverlay) {
+    mobileBtn.addEventListener('click', () => {
+      mobileBtn.classList.toggle('active');
+      mobileOverlay.classList.toggle('active');
+      document.body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : '';
+    });
+
+    const mobileLinks = mobileOverlay.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileBtn.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+
+  // Theme Toggle Logic
+  const themeToggleBtn = document.getElementById('theme-toggle');
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      if (newTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      
+      window.localStorage.setItem('theme', newTheme);
+    });
+  }
+</script>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    padding: 1.5rem 0;
+    transition: all var(--tr-smooth);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    z-index: 1001; /* Stay above mobile menu */
+  }
+
+  .desktop-only {
+    display: flex;
+  }
+
+  .nav-links.desktop-only {
+    gap: 2.5rem;
+  }
+
+  .nav-links a {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color var(--tr-fast);
+  }
+
+  .nav-links a:hover {
+    color: var(--fg);
+  }
+
+  /* Theme Switch Modern Pill */
+  .theme-switch-premium {
+    position: relative;
+    width: 54px;
+    height: 28px;
+    border-radius: 28px;
+    background: #1e1e24; /* Dark Mode Pill */
+    border: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    transition: all 0.4s ease;
+  }
+
+  :global(:root[data-theme="light"]) .theme-switch-premium {
+    background: #ffffff; /* Light Mode Pill */
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05), 0 2px 10px rgba(0,0,0,0.02);
+  }
+
+  .switch-thumb {
+    position: absolute;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #1e1e24; /* moon color */
+    z-index: 2;
+  }
+
+  :global(:root[data-theme="light"]) .switch-thumb {
+    transform: translateX(26px);
+    background: #ffffff;
+    color: #f59e0b; /* sun color */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .switch-thumb .icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .switch-thumb .icon.sun { display: none; }
+  .switch-thumb .icon.moon { display: block; }
+
+  :global(:root[data-theme="light"]) .switch-thumb .icon.moon { display: none; }
+  :global(:root[data-theme="light"]) .switch-thumb .icon.sun { display: block; }
+
+  /* Hamburger Button */
+  .mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .mobile-toggle .bar {
+    height: 3px;
+    width: 100%;
+    background-color: var(--fg);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  /* Hamburger Animasi Buka Tutup (X) */
+  .mobile-toggle.active .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+  .mobile-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile-toggle.active .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+
+  /* Mobile Overlay Menu */
+  .mobile-nav-links {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 15, 25, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 1000;
+  }
+
+  .mobile-nav-links.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .mobile-nav-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+    width: 100%;
+    padding: 0 2rem;
+  }
+
+  .mobile-link {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none !important;
+    }
+    .mobile-toggle {
+      display: flex;
+    }
+  }
+</style>
