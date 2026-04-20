@@ -198,4 +198,19 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
       padding-top: 6rem;
     }
   }
+  
+  @media (max-width: 768px) {
+    .badge {
+      margin-bottom: 1.5rem;
+    }
+    .hero-actions {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .hero-actions .btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+  }
 </style>

@@ -324,7 +324,7 @@ ul {
   }
 
   .title-xl {
-    font-size: clamp(2.2rem, 8vw, 3rem) !important;
+    font-size: clamp(1.8rem, 8vw, 2.5rem) !important;
   }
 
   .title-lg {

@@ -7,7 +7,7 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
 <header class="navbar">
   <div class="container nav-container">
     <a href="/" class="logo" style="display: flex; align-items: center;">
-      <img src="/logo.png" alt="Creative Divisions" style="height: 55px; width: auto;" />
+      <img src="/logo.png" alt="Creative Divisions" class="nav-logo-img" />
     </a>
     
     <nav class="nav-links desktop-only">
@@ -120,6 +120,12 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
     font-weight: 700;
     letter-spacing: -0.02em;
     z-index: 1001; /* Stay above mobile menu */
+  }
+
+  .nav-logo-img {
+    height: 55px;
+    width: auto;
+    transition: height var(--tr-smooth);
   }
 
   .desktop-only {
@@ -275,6 +281,9 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
     }
     .mobile-toggle {
       display: flex;
+    }
+    .nav-logo-img {
+      height: 38px;
     }
   }
 </style>
