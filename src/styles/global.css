@@ -324,34 +324,35 @@ ul {
   }
 
   .title-xl {
-    font-size: clamp(1.8rem, 8vw, 2.5rem) !important;
+    font-size: clamp(1.75rem, 6vw, 2.25rem) !important;
   }
 
   .title-lg {
-    font-size: clamp(1.8rem, 6vw, 2.5rem) !important; 
-    margin-bottom: 1rem !important;
+    font-size: clamp(1.5rem, 5vw, 2rem) !important; 
+    margin-bottom: 0.75rem !important;
   }
 
   .title-md {
-    font-size: clamp(1.4rem, 4vw, 1.8rem) !important;
+    font-size: clamp(1.25rem, 4vw, 1.5rem) !important;
   }
 
   .glass-card {
-    padding: 1.5rem !important;
+    padding: 1.25rem !important;
   }
 
   .btn {
-    padding: 0.7rem 1.5rem;
-    font-size: 0.95rem;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.9rem;
   }
 
   p {
-    font-size: 0.95rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
   }
 
   /* Specific Components that were too big */
   .section-header {
-    margin-bottom: 2.5rem !important;
+    margin-bottom: 2rem !important;
   }
 
   /* Contact Form Stacking on Mobile */
