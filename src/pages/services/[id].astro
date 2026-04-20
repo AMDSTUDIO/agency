@@ -12,15 +12,15 @@ const entry = services[0];
 if (!entry) return new Response("Not found", { status: 404 });
 
 const bannerImages: Record<string, string> = {
-  "project-dev": "https://images.unsplash.com/photo-1682141007707-1f09c5a1d814?q=80&w=2000&auto=format&fit=crop",
-  "consult-arch": "https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?q=80&w=2000&auto=format&fit=crop",
-  "consult-biz": "https://images.unsplash.com/photo-1661329955912-ebc4279f3b21?q=80&w=2000&auto=format&fit=crop",
-  "graphic-design": "https://images.unsplash.com/photo-1674730952302-c9c9bc5da824?q=80&w=2000&auto=format&fit=crop",
-  "digital-marketing": "https://images.unsplash.com/photo-1682309543429-6aaa6d792dae?q=80&w=2000&auto=format&fit=crop",
-  "procurement": "https://images.unsplash.com/photo-1681426736883-49a5787eee8e?q=80&w=2000&auto=format&fit=crop",
-  "web-dev": "https://images.unsplash.com/photo-1661331617718-e99db3b0e64f?q=80&w=2000&auto=format&fit=crop",
-  "live-streaming": "https://images.unsplash.com/photo-1619099619226-f96e319e3732?q=80&w=2000&auto=format&fit=crop",
-  "av-specialist": "https://images.unsplash.com/photo-1619099619226-f96e319e3732?q=80&w=2000&auto=format&fit=crop"
+  "project-dev": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop",
+  "consult-arch": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop",
+  "consult-biz": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000&auto=format&fit=crop",
+  "graphic-design": "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=2000&auto=format&fit=crop",
+  "digital-marketing": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop",
+  "procurement": "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=2000&auto=format&fit=crop",
+  "web-dev": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop",
+  "live-streaming": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?q=80&w=2000&auto=format&fit=crop",
+  "av-specialist": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?q=80&w=2000&auto=format&fit=crop"
 };
 
 const coverImg = bannerImages[entry.id] || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop";
