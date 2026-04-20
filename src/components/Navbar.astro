@@ -262,20 +262,23 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
   .mobile-nav-container {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     text-align: center;
     width: 100%;
     padding: 0 2rem;
   }
 
   .mobile-link {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.15rem;
+    font-weight: 500;
     color: white;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.03em;
   }
 
   @media (max-width: 768px) {
+    .navbar {
+      padding: 1rem 0;
+    }
     .desktop-only {
       display: none !important;
     }
@@ -283,7 +286,7 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
       display: flex;
     }
     .nav-logo-img {
-      height: 30px;
+      height: 28px;
     }
   }
 </style>

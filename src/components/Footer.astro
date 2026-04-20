@@ -12,7 +12,7 @@ const footerServices = services.slice(0, 5);
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/"><img src="/logo.png" alt="Creative Divisions" style="height: 60px; width: auto; margin-bottom: 1.5rem;" /></a>
+        <a href="/"><img src="/logo.png" alt="Creative Divisions" class="footer-logo-img" /></a>
         <p class="text-muted" style="max-width: 300px; font-size: 0.9rem;">
           {settings.footer_desc}
         </p>
@@ -56,6 +56,12 @@ const footerServices = services.slice(0, 5);
     margin-bottom: 4rem;
   }
 
+  .footer-logo-img {
+    height: 55px;
+    width: auto;
+    margin-bottom: 1.5rem;
+  }
+
   .logo {
     font-size: 2rem;
     font-family: var(--font-heading);
@@ -85,8 +91,16 @@ const footerServices = services.slice(0, 5);
   }
 
   @media (max-width: 768px) {
+    .footer {
+      padding: 3.5rem 0 2rem;
+    }
     .footer-grid {
       grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .footer-logo-img {
+      height: 40px;
     }
   }
 </style>
