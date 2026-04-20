@@ -323,17 +323,27 @@ ul {
     padding: 0 1.25rem;
   }
 
-  /* Root REM Scaling - The Ultimate Responsive Solution */
-  html {
-    font-size: 13px !important; /* Scales everything by ~81% (13/16) */
+  /* Universal Readable Mobile Typography */
+  h1, .title-xl {
+    font-size: clamp(2rem, 7vw, 2.5rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  h2, .title-lg, [style*="font-size: 2rem"] {
+    font-size: clamp(1.6rem, 5vw, 1.8rem) !important; 
+  }
+
+  h3, .title-md {
+    font-size: clamp(1.3rem, 4vw, 1.5rem) !important;
   }
 
   .btn {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.8rem !important;
+    padding: 0.6rem 1.4rem !important;
+    font-size: 0.95rem !important;
   }
 
   p, .body-text, .text-muted, span:not(.category) {
+    font-size: 0.95rem !important;
     line-height: 1.6 !important;
   }
 
@@ -344,7 +354,7 @@ ul {
   }
   
   .section-header {
-    margin-bottom: 2rem !important;
+    margin-bottom: 2.5rem !important;
   }
 
   /* Contact Form Stacking on Mobile */
@@ -356,9 +366,6 @@ ul {
 
 /* 📱 TINY MOBILE EXTRAS */
 @media (max-width: 480px) {
-  html {
-    font-size: 11px !important; /* Scales everything by ~68% (11/16) */
-  }
   .portfolio-hero, .testimo-hero, .blog-hero, .service-hero, .about-hero {
     min-height: 55vh !important;
     padding-top: 7rem !important;
