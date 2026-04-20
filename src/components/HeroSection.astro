@@ -204,13 +204,12 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
       margin-bottom: 1.5rem;
     }
     .hero-actions {
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
       gap: 0.8rem;
     }
     .hero-actions .btn {
-      width: 100%;
-      text-align: center;
-      justify-content: center;
+      width: auto;
     }
   }
 </style>
