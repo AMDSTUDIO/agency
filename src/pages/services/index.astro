@@ -12,9 +12,9 @@ const services = await db.select().from(Service);
       <p class="text-muted" style="margin-top: 1rem; max-width:600px; margin-left:auto; margin-right:auto;">Eksplorasi selengkapnya kapabilitas kami di berbagai disiplin teknologi dan bisnis.</p>
     </div>
 
-    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    <div class="grid" style="display: flex; flex-wrap: wrap; gap: 2rem;">
       {services.map(s => (
-        <div class="glass-card service-card">
+        <div class="glass-card service-card" style="flex: 1 1 300px; padding: 2rem; display: flex; flex-direction: column;">
           <div class="icon-wrapper" style={`background: ${s.color}20; color: ${s.color}; width:60px; height:60px; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:2rem; margin-bottom:1.5rem;`}>
             {s.icon}
           </div>

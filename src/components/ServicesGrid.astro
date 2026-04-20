@@ -44,12 +44,13 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
   }
 
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
   }
 
   .service-card {
+    flex: 1 1 300px;
     text-align: left;
     padding: 2.5rem 2rem;
     display: flex;
