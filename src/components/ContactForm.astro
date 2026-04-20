@@ -1,7 +1,14 @@
 ---
-import { db, Message, Service } from 'astro:db';
+import { db, Message, Service, GlobalSetting } from 'astro:db';
 
 const servicesResult = await db.select().from(Service);
+const rawSettings = await db.select().from(GlobalSetting);
+const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
+
+let waNumber = (settings.whatsapp_number || "0851623219924").replace(/\D/g, '');
+if (waNumber.startsWith('0')) {
+  waNumber = '62' + waNumber.substring(1);
+}
 
 let success = false;
 let error = "";
@@ -16,12 +23,14 @@ if (Astro.request.method === "POST") {
   const id = "msg_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
   const created_at = new Date();
 
+  // Handle Fetch/Ajax style POST without full page reload if desired,
+  // but since we will redirect to WA, we still save it.
   try {
     await db.insert(Message).values({ id, name, email, service, content, created_at });
     success = true;
   } catch (e) {
     console.error(e);
-    error = "Gagal mengirimkan pesan. Mohon coba lagi nanti.";
+    error = "Gagal menyimpan pesan ke database.";
   }
 }
 ---
@@ -50,22 +59,22 @@ if (Astro.request.method === "POST") {
       )}
 
       {!success && (
-        <form method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <form id="wa-contact-form" method="POST" data-wa={waNumber} style="display: flex; flex-direction: column; gap: 1.5rem;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
             <div class="form-group">
               <label class="form-label">Nama Lengkap</label>
-              <input type="text" name="name" class="form-input" required placeholder="Jhon Doe" />
+              <input type="text" id="wa-name" name="name" class="form-input" required placeholder="Jhon Doe" />
             </div>
             
             <div class="form-group">
               <label class="form-label">Alamat Email Bisnis</label>
-              <input type="email" name="email" class="form-input" required placeholder="nama@perusahaan.com" />
+              <input type="email" id="wa-email" name="email" class="form-input" required placeholder="nama@perusahaan.com" />
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Layanan yang Diperlukan</label>
-            <select name="service" class="form-input" required>
+            <select id="wa-service" name="service" class="form-input" required>
               <option value="" disabled selected>Pilih Layanan Konsultasi...</option>
               {servicesResult.map((s) => (
                 <option value={s.title}>{s.title}</option>
@@ -76,12 +85,63 @@ if (Astro.request.method === "POST") {
 
           <div class="form-group">
             <label class="form-label">Jelaskan Ide / Rencana Anda</label>
-            <textarea name="content" class="form-input" rows="5" required placeholder="Ceritakan brief rancangan kebutuhan proyek dan apa target pasar yang ingin Anda tuju..."></textarea>
+            <textarea id="wa-content" name="content" class="form-input" rows="5" required placeholder="Ceritakan brief rancangan kebutuhan proyek dan apa target pasar yang ingin Anda tuju..."></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="padding: 1.2rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem; width: 100%;">🚀 Kirim Pertanyaan & Request Penawaran</button>
+          <button id="wa-submit-btn" type="submit" class="btn btn-primary" style="padding: 1.2rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem; width: 100%;">🚀 Kirim Pertanyaan & Request Penawaran</button>
         </form>
       )}
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById('wa-contact-form');
+  const submitBtn = document.getElementById('wa-submit-btn');
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const waNumber = form.getAttribute('data-wa');
+      const fd = new FormData(form);
+      
+      const name = fd.get('name');
+      const email = fd.get('email');
+      const service = fd.get('service');
+      const content = fd.get('content');
+
+      // 1. Send data to server database silently (so it still appears in dashboard)
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = 'Mengalihkan ke WhatsApp...';
+      submitBtn.style.opacity = '0.7';
+      
+      try {
+        await fetch(window.location.href, {
+          method: 'POST',
+          body: fd,
+        });
+      } catch (err) {
+        console.error("Gagal menyimpan ke dashboard, tapi pesan akan tetap dilanjut ke WA.", err);
+      }
+
+      // 2. Format the WhatsApp Message
+      const message = `Halo! Saya tertarik untuk berdiskusi lebih lanjut tentang proyek saya.\n\n*DATA KLIEN*\nNama: ${name}\nEmail: ${email}\nLayanan dibutuhkan: ${service}\n\n*IDE / RENCANA PENGEMBANGAN:*\n${content}`;
+      
+      // 3. Open WhatsApp
+      const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, '_blank');
+
+      // 4. Reset & Notify User
+      submitBtn.innerText = '✅ Terkirim! Lanjut di WhatsApp';
+      submitBtn.style.background = '#10b981';
+      form.reset();
+      
+      setTimeout(() => {
+        submitBtn.innerText = originalText;
+        submitBtn.style.background = '';
+        submitBtn.style.opacity = '1';
+      }, 5000);
+    });
+  }
+</script>
