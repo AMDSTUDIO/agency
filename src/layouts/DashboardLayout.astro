@@ -250,17 +250,21 @@ const currentUser = Astro.cookies.get("admin_username")?.value || 'Guest';
   }
   :global(.form-input) {
     width: 100%;
-    padding: 0.8rem 1rem;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(0,0,0,0.2);
-    color: var(--fg);
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(15, 20, 30, 0.6);
+    color: #fff;
     font-family: inherit;
-    transition: border-color var(--tr-fast);
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
   }
   :global(.form-input:focus) {
     outline: none;
-    border-color: var(--primary);
+    border-color: rgba(129, 140, 248, 0.8);
+    background: rgba(15, 20, 30, 0.8);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
   }
   :global(.table-container) {
     overflow-x: auto;
