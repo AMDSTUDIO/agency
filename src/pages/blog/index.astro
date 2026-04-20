@@ -6,11 +6,17 @@ const articles = await db.select().from(Blog).orderBy(desc(Blog.date));
 ---
 
 <Layout title="Kumpulan Artikel Blog">
-  <div class="container" style="padding-top: 8rem; padding-bottom: 4rem;">
-    <div class="section-header text-center" style="margin-bottom: 4rem;">
-      <h1 class="title-xl">Artikel & <span class="text-gradient">Wawasan</span></h1>
-      <p class="text-muted" style="margin-top: 1rem;">Kumpulan pemikiran, tutorial, dan rahasia industri dari para ahlinya.</p>
+  <div class="blog-hero" style={`background: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat; height: 60vh; min-height: 400px; display: flex; align-items: flex-end; position: relative;`}>
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg) 0%, var(--hero-overlay) 100%);"></div>
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg) 0%, transparent 100%);"></div>
+    <div class="container" style="position: relative; z-index: 2; padding-bottom: 4rem;">
+      <span class="category" style={`font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: inline-block; background: var(--bg); padding: 0.5rem 1rem; border-radius: 8px; border: none; color: var(--fg); box-shadow: 0 4px 15px rgba(0,0,0,0.1);`}>Dari Meja Redaksi</span>
+      <h1 class="title-xl" style="font-size: clamp(2rem, 5vw, 4rem); max-width: 900px; margin-bottom: 1rem;">Artikel & <span class="text-gradient">Wawasan</span></h1>
+      <p class="text-muted" style="max-width: 700px; font-size: 1.1rem; line-height: 1.6;">Kumpulan pemikiran, tutorial, dan rahasia industri dari para ahlinya.</p>
     </div>
+  </div>
+
+  <div class="container article-container" style="padding-top: 5rem; padding-bottom: 6rem; max-width: 1200px; margin: 0 auto;">
 
     <div class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
       {articles.map(a => (
