@@ -368,9 +368,8 @@ ul {
     font-size: 2rem !important;
   }
   .portfolio-hero, .testimo-hero, .blog-hero, .service-hero {
-    height: auto !important;
-    min-height: 50vh !important;
-    padding-top: 6rem !important;
+    min-height: 55vh !important;
+    padding-top: 7rem !important;
   }
   .article-container {
     padding-top: 1.5rem !important;
