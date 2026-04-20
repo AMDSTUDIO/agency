@@ -68,40 +68,41 @@ const portfolios = await db.select().from(Portfolio);
     </details>
   </div>
 
-  <div class="table-container glass-card" style="padding: 0;">
-    <h3 style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin: 0; font-size: 1.2rem;">Katalog Portfolio</h3>
-    <div style="overflow-x: auto;">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Gambar</th>
-            <th>Judul & Kategori</th>
-            <th style="text-align:right;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {portfolios.map(p => (
-            <tr>
-              <td><img src={p.img} alt={p.title} width="80" style="border-radius:8px; display:block; box-shadow:0 4px 6px rgba(0,0,0,0.3);" /></td>
-              <td>
-                <div style="font-weight: 600; color: #fff;">{p.title}</div>
-                <div class="text-muted" style="font-size: 0.85rem; margin-top: 0.3rem;">{p.category}</div>
-              </td>
-              <td style="text-align:right;">
-                <form method="POST" style="margin:0;" onsubmit="return confirm('Hapus permanen portfolio ini?');">
-                  <input type="hidden" name="action" value="delete"/>
-                  <input type="hidden" name="id" value={p.id}/>
-                  <button class="action-btn danger">Hapus</button>
-                </form>
-              </td>
-            </tr>
-          ))}
-          {portfolios.length === 0 && (
-            <tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding: 3rem;">Belum ada entri portfolio.</td></tr>
-          )}
-        </tbody>
-      </table>
+  <div>
+    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 600;">Katalog Portfolio Aktif</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+      {portfolios.map(p => (
+        <div class="data-card glass-card" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease;">
+          <div style="position: relative; padding-top: 56.25%;">
+            <img src={p.img} alt={p.title} style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" />
+            <span style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); padding: 0.3rem 0.6rem; border-radius: 99px; color: #fff; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.1);">{p.id}</span>
+          </div>
+          
+          <div style="padding: 1.5rem; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+            <div style="margin-bottom: 1rem;">
+              <span style="display: inline-block; padding: 0.2rem 0.6rem; background: rgba(99, 102, 241, 0.1); color: #818cf8; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">{p.category}</span>
+              <h4 style="font-size: 1.1rem; font-weight: 600; color: #fff; line-height: 1.4;">{p.title}</h4>
+            </div>
+            
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+              <form method="POST" style="margin:0;" onsubmit="return confirm('Hapus permanen portfolio ini?');">
+                <input type="hidden" name="action" value="delete"/>
+                <input type="hidden" name="id" value={p.id}/>
+                <button class="action-btn danger" style="width: 100%; border-radius: 8px;">🗑️ Hapus Proyek</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
+
+    {portfolios.length === 0 && (
+      <div class="glass-card" style="text-align:center; color: var(--text-muted); padding: 4rem 2rem; border-style: dashed;">
+        <span style="font-size: 3rem; opacity: 0.5; display: block; margin-bottom: 1rem;">🖼️</span>
+        Belum ada entri portfolio. Silakan tambahkan proyek pertama Anda.
+      </div>
+    )}
   </div>
 </DashboardLayout>
 
