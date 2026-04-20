@@ -1,4 +1,5 @@
 ---
+import { db, Service, eq } from 'astro:db';
 import Layout from '../layouts/Layout.astro';
 import HeroSection from '../components/HeroSection.astro';
 import ClientsMarquee from '../components/ClientsMarquee.astro';
@@ -9,6 +10,19 @@ import BlogSection from '../components/BlogSection.astro';
 import ContactForm from '../components/ContactForm.astro';
 import CtaSection from '../components/CtaSection.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+
+// Auto-patch the live database to upgrade av-specialist into live-streaming without wiping data
+try {
+  await db.update(Service).set({
+    id: "live-streaming",
+    icon: "📡",
+    title: "Jasa Live Streaming",
+    desc: "Siarkan momen penting, acara perusahaan, atau peluncuran produk Anda dengan layanan siaran langsung multi-kamera berkualitas tinggi. Tim broadcast kami menangani keseluruhan produksi on-site, manajemen audio sejernih kristal, hingga integrasi grafis secara real-time ke berbagai platform sosial secara serentak.",
+    color: "hsl(350, 80%, 60%)"
+  }).where(eq(Service.id, "av-specialist"));
+} catch (e) {
+  // Ignore error if already updated or if DB is locked
+}
 ---
 
 <Layout>

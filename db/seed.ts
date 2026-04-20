@@ -97,11 +97,11 @@ export default async function seed() {
       color: "hsl(300, 70%, 60%)"
     },
     {
-      id: "av-specialist",
-      icon: "🎬",
-      title: "Audio/Visual Specialist",
-      desc: "Aset video telah mendominasi keterlibatan web dalam era dekade ini. Tim audio visual sinematik kami menangkap narasi inti merek Anda melalui pengambilan video komersial beresolusi tingkat bioskop, perekaman udara dengan drone 4K, suara teater spasial, pengeditan pasca-produksi dinamis yang siap ditayangkan.",
-      color: "hsl(10, 80%, 60%)"
+      id: "live-streaming",
+      icon: "📡",
+      title: "Jasa Live Streaming",
+      desc: "Siarkan momen penting, acara perusahaan, atau peluncuran produk Anda dengan layanan siaran langsung multi-kamera berkualitas tinggi. Tim broadcast kami menangani keseluruhan produksi on-site, manajemen audio sejernih kristal, hingga integrasi grafis secara real-time ke berbagai platform sosial secara serentak.",
+      color: "hsl(350, 80%, 60%)"
     }
   ]);
 
