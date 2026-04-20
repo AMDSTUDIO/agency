@@ -6,6 +6,10 @@ import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://creativedivisions.my.id',
+  security: {
+    checkOrigin: false
+  },
   output: 'server',
   integrations: [db()],
 
