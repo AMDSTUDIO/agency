@@ -32,15 +32,23 @@ const services_title_default = "Layanan <span class=\"text-gradient\">Kami</span
 ---
 
 <DashboardLayout title="Pengaturan Global Situs">
-  <div style="max-width: 1000px; margin: 0 auto;">
+  <div style="max-width: 1400px; margin: 0 auto;">
     
-    <div style="margin-bottom: 2.5rem;">
-      <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Sistem Kendali Global</h2>
-      <p class="text-muted" style="font-size: 1.1rem; line-height: 1.6;">Atur identitas merek, meta-data mesin pencari, serta seluruh terminologi pada halaman terdepan (Frontpage) dari satu panel komando pusat.</p>
+    <div style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Sistem Kendali Global</h2>
+        <p class="text-muted" style="font-size: 1.1rem; line-height: 1.6; max-width: 600px;">Atur identitas merek, meta-data mesin pencari, serta seluruh terminologi layar dari panel terpadu ini.</p>
+      </div>
+      <!-- Moved save button to top to prevent scrolling deep down -->
+      <div>
+        <button type="submit" form="settings-form" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.05rem; font-weight: bold; border-radius: 99px; box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4); border: 1px solid rgba(255,255,255,0.2);">
+          💾 Simpan Pengaturan
+        </button>
+      </div>
     </div>
     
-    <form method="POST">
-      <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+    <form id="settings-form" method="POST">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem; align-items: start;">
         
         <!-- Identitas Dasar & Footer -->
         <div class="glass-card" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
