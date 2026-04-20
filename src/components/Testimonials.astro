@@ -36,13 +36,14 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
 
 <style>
   .testimo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
   }
 
   .testimo-card {
     position: relative;
+    flex: 1 1 300px;
     padding: 2.5rem;
     display: flex;
     flex-direction: column;

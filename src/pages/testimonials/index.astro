@@ -12,9 +12,9 @@ const testimonials = await db.select().from(Testimonial);
       <p class="text-muted" style="margin-top: 1rem;">Kumpulan testimoni jujur dari ragam klien agensi kami.</p>
     </div>
 
-    <div class="testimo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    <div class="testimo-grid" style="display: flex; flex-wrap: wrap; gap: 2rem;">
       {testimonials.map(t => (
-        <a href={`/testimonials/${t.id}`} class="glass-card testimo-card" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between; padding:2rem;">
+        <a href={`/testimonials/${t.id}`} class="glass-card testimo-card" style="flex: 1 1 300px; text-decoration:none; color:inherit; display:flex; flex-direction:column; justify-content:space-between; padding:2rem;">
           <p class="content" style="font-size:1.1rem; line-height:1.7; font-style:italic;">"{t.content}"</p>
           <div class="author" style="display:flex; align-items:center; gap:1rem; margin-top:2rem;">
             <img src={t.avatar} alt={t.name} loading="lazy" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" />
