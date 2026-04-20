@@ -293,9 +293,9 @@ ul {
   width: 100%;
   padding: 1rem 1.2rem;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 15, 25, 0.4);
-  color: white;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-card-bg);
+  color: var(--fg);
   font-family: var(--font-body);
   font-size: 1rem;
   outline: none;
@@ -305,12 +305,13 @@ ul {
 
 .form-input:focus {
   border-color: var(--primary);
-  background: rgba(10, 15, 25, 0.7);
+  background: var(--glass-bg);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .form-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 /* 📱 MOBILE RESPONSIVENESS OVERRIDES */

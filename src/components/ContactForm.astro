@@ -34,7 +34,7 @@ if (Astro.request.method === "POST") {
       <p class="text-muted" style="margin-top: 1rem;">Sudah punya wawasan yang mantap? Diskusikan ide Anda bersama Konsultan Digital kami dan raih penawaran esklusif secara gratis.</p>
     </div>
 
-    <div class="glass-card" style="padding: 3rem; background: rgba(20, 25, 35, 0.6); backdrop-filter: blur(20px);">
+    <div class="glass-card" style="padding: 3rem;">
       
       {success && (
         <div style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(16, 185, 129, 0.4); text-align: center;">
@@ -65,7 +65,7 @@ if (Astro.request.method === "POST") {
 
           <div class="form-group">
             <label class="form-label">Layanan yang Diperlukan</label>
-            <select name="service" class="form-input" style="color: white; background: rgba(0,0,0,0.5);" required>
+            <select name="service" class="form-input" required>
               <option value="" disabled selected>Pilih Layanan Konsultasi...</option>
               {servicesResult.map((s) => (
                 <option value={s.title}>{s.title}</option>
