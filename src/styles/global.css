@@ -321,44 +321,16 @@ ul {
   
   .container {
     padding: 0 1.25rem;
-  }
-
-  /* Global Typography Enforcer to override inline styles */
-  h1, .title-xl {
-    font-size: clamp(1.6rem, 5vw, 2rem) !important;
-    line-height: 1.2 !important;
-    margin-bottom: 0.8rem !important;
-  }
-
-  h2, .title-lg, [style*="font-size: 2rem"] {
-    font-size: clamp(1.4rem, 4vw, 1.6rem) !important; 
-    margin-bottom: 0.6rem !important;
-  }
-
-  h3, .title-md, [style*="font-size: 3rem"], [style*="font-size: 2.5rem"] {
-    font-size: clamp(1.2rem, 3.5vw, 1.4rem) !important;
-    margin-bottom: 0.5rem !important;
-  }
-
-  h4, h5 {
-    font-size: 1.1rem !important;
+  /* Root REM Scaling - The Ultimate Responsive Solution */
+  html {
+    font-size: 13px !important; /* Scales everything by ~81% (13/16) */
   }
 
   p, .body-text, .text-muted, span:not(.category) {
-    font-size: 0.9rem !important;
-    line-height: 1.5 !important;
+    line-height: 1.6 !important;
   }
 
-  .glass-card {
-    padding: 1.25rem !important;
-  }
-
-  .btn {
-    padding: 0.7rem 1.2rem;
-    font-size: 0.9rem;
-  }
-
-  /* Specific Components that were too big */
+  /* Specific Component fix */
   .meta {
     flex-wrap: wrap;
     gap: 0.5rem !important;
@@ -377,8 +349,8 @@ ul {
 
 /* 📱 TINY MOBILE EXTRAS */
 @media (max-width: 480px) {
-  .title-xl {
-    font-size: 2rem !important;
+  html {
+    font-size: 11px !important; /* Scales everything by ~68% (11/16) */
   }
   .portfolio-hero, .testimo-hero, .blog-hero, .service-hero, .about-hero {
     min-height: 55vh !important;
