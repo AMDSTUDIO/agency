@@ -5,7 +5,13 @@ const servicesResult = await db.select().from(Service);
 const rawSettings = await db.select().from(GlobalSetting);
 const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
 
-let waNumber = (settings.whatsapp_number || "0851623219924").replace(/\D/g, '');
+let rawWa = settings.whatsapp_number;
+// Auto-correct my previous typo if still in the user's DB
+if (!rawWa || rawWa === "0851623219924") {
+  rawWa = "085163219924";
+}
+
+let waNumber = rawWa.replace(/\D/g, '');
 if (waNumber.startsWith('0')) {
   waNumber = '62' + waNumber.substring(1);
 }

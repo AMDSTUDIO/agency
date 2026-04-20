@@ -33,7 +33,7 @@ export default async function seed() {
     { key: "footer_email", value: "hello@creativestudio.id" },
     
     // Contact Info
-    { key: "whatsapp_number", value: "0851623219924" },
+    { key: "whatsapp_number", value: "085163219924" },
     
     // Global SEO
     { key: "seo_brand_title", value: "Creative Agency - Ahli Web Development & Solusi Digital" },
