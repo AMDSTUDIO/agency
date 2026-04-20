@@ -367,7 +367,7 @@ ul {
   .title-xl {
     font-size: 2rem !important;
   }
-  .portfolio-hero, .testimo-hero, .blog-hero, .service-hero {
+  .portfolio-hero, .testimo-hero, .blog-hero, .service-hero, .about-hero {
     min-height: 55vh !important;
     padding-top: 7rem !important;
   }
