@@ -27,54 +27,68 @@ const portfolios = await db.select().from(Portfolio);
 ---
 
 <DashboardLayout title="Manajemen Portfolio">
-  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
-    
-    <div class="glass-card">
-      <h3 class="title-md" style="margin-bottom: 1.5rem; font-size: 1.2rem;">Tambah Portfolio</h3>
+  <div class="dashboard-action-bar" style="margin-bottom: 2rem;">
+    <details class="glass-card add-new-details">
+      <summary class="add-new-summary">
+        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="font-size: 1.2rem;">✨</span> Tambah Portfolio Karya</span>
+        <span class="indicator text-muted">Buka formulir &darr;</span>
+      </summary>
       
-      <form method="POST">
-        <input type="hidden" name="action" value="create"/>
-        
-        <div class="form-group">
-          <label class="form-label">ID / Slug Unik</label>
-          <input type="text" name="id" class="form-input" required />
-        </div>
+      <div class="add-new-content">
+        <form method="POST">
+          <input type="hidden" name="action" value="create"/>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div class="form-group">
+              <label class="form-label">ID / Slug Unik</label>
+              <input type="text" name="id" class="form-input" required />
+            </div>
 
-        <div class="form-group">
-          <label class="form-label">Judul Proyek</label>
-          <input type="text" name="title" class="form-input" required />
-        </div>
+            <div class="form-group">
+              <label class="form-label">Judul Proyek</label>
+              <input type="text" name="title" class="form-input" required />
+            </div>
 
-        <div class="form-group">
-          <label class="form-label">Kategori (mis: Web App)</label>
-          <input type="text" name="category" class="form-input" required />
-        </div>
+            <div class="form-group">
+              <label class="form-label">Kategori (mis: Web App)</label>
+              <input type="text" name="category" class="form-input" required />
+            </div>
 
-        <div class="form-group">
-          <label class="form-label">URL Gambar Sampul</label>
-          <input type="url" name="img" class="form-input" required />
-        </div>
+            <div class="form-group">
+              <label class="form-label">URL Gambar Sampul (Unsplash dll)</label>
+              <input type="url" name="img" class="form-input" required />
+            </div>
+          </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Portfolio</button>
-      </form>
-    </div>
+          <div style="margin-top: 1.5rem; text-align: right;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 99px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);">Simpan Portfolio</button>
+          </div>
+        </form>
+      </div>
+    </details>
+  </div>
 
-    <div class="glass-card table-container">
+  <div class="table-container glass-card" style="padding: 0;">
+    <h3 style="padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin: 0; font-size: 1.2rem;">Katalog Portfolio</h3>
+    <div style="overflow-x: auto;">
       <table class="admin-table">
         <thead>
           <tr>
             <th>Gambar</th>
             <th>Judul & Kategori</th>
-            <th>Aksi</th>
+            <th style="text-align:right;">Aksi</th>
           </tr>
         </thead>
         <tbody>
           {portfolios.map(p => (
             <tr>
-              <td><img src={p.img} alt={p.title} width="60" style="border-radius:5px;" /></td>
-              <td><strong>{p.title}</strong><br/><small class="text-muted">{p.category}</small></td>
+              <td><img src={p.img} alt={p.title} width="80" style="border-radius:8px; display:block; box-shadow:0 4px 6px rgba(0,0,0,0.3);" /></td>
               <td>
-                <form method="POST" style="display:inline;" onsubmit="return confirm('Hapus portfolio ini?');">
+                <div style="font-weight: 600; color: #fff;">{p.title}</div>
+                <div class="text-muted" style="font-size: 0.85rem; margin-top: 0.3rem;">{p.category}</div>
+              </td>
+              <td style="text-align:right;">
+                <form method="POST" style="margin:0;" onsubmit="return confirm('Hapus permanen portfolio ini?');">
                   <input type="hidden" name="action" value="delete"/>
                   <input type="hidden" name="id" value={p.id}/>
                   <button class="action-btn danger">Hapus</button>
@@ -82,8 +96,46 @@ const portfolios = await db.select().from(Portfolio);
               </td>
             </tr>
           ))}
+          {portfolios.length === 0 && (
+            <tr><td colspan="3" style="text-align:center; color: var(--text-muted); padding: 3rem;">Belum ada entri portfolio.</td></tr>
+          )}
         </tbody>
       </table>
     </div>
   </div>
 </DashboardLayout>
+
+<style>
+  .add-new-details {
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+  .add-new-details[open] {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .add-new-summary {
+    list-style: none;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    user-select: none;
+  }
+  .add-new-summary::-webkit-details-marker {
+    display: none;
+  }
+  .add-new-content {
+    padding: 0 2rem 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    animation: slideDown 0.3s ease-out forwards;
+  }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
