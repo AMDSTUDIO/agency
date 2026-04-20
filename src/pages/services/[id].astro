@@ -13,7 +13,7 @@ if (!entry) return new Response("Not found", { status: 404 });
 
 const bannerImages: Record<string, string> = {
   "project-dev": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop",
-  "consult-arch": "https://images.unsplash.com/photo-1542621334-a254cf47733d?q=80&w=2000&auto=format&fit=crop",
+  "consult-arch": "/arch-banner.png",
   "consult-biz": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2000&auto=format&fit=crop",
   "graphic-design": "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=2000&auto=format&fit=crop",
   "digital-marketing": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop",
@@ -36,7 +36,7 @@ const coverImg = bannerImages[entry.id] || "https://images.unsplash.com/photo-14
     </div>
   </div>
 
-  <div class="container article-container" style="padding-top: 3rem; padding-bottom: 6rem; max-width: 800px; margin: 0 auto;">
+  <div class="container article-container" style="padding-top: 3rem; padding-bottom: 6rem; max-width: 1100px; margin: 0 auto;">
     <a href="/services" class="btn btn-outline back-btn" style="margin-bottom: 3rem;">&larr; Kembali ke Daftar Layanan</a>
     
     <div class="glass-card" style={`border-top: 4px solid ${entry.color}; padding: 3rem; margin-bottom: 3rem;`}>
