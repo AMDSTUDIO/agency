@@ -47,144 +47,189 @@ const services_title_default = "Layanan <span class=\"text-gradient\">Kami</span
       </div>
     </div>
     
+    <div style="display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem; overflow-x: auto; padding-bottom: 0.5rem;" class="custom-scrollbar">
+      <button type="button" class="tab-btn active" data-target="tab-identitas">🏢 Identitas & Kontak</button>
+      <button type="button" class="tab-btn" data-target="tab-seo">🔍 Optimasi SEO</button>
+      <button type="button" class="tab-btn" data-target="tab-hero">🌠 Hero Section</button>
+      <button type="button" class="tab-btn" data-target="tab-label">🏷️ Label Bagian</button>
+    </div>
+    
     <form id="settings-form" method="POST">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem; align-items: start;">
-        
-        <!-- Identitas Dasar & Footer -->
-        <div class="glass-card" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
-          <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; display:flex; align-items:center; gap:0.5rem;">
-            <span>🏢</span> Identitas Korporat & Kontak
-          </h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-            <div class="form-group">
-              <label class="form-label">Nama Logo / Brand Utama</label>
-              <input type="text" name="site_logo" class="form-input" value={settings.site_logo || "Creative Studio"} />
-            </div>
-            <div class="form-group">
-               <label class="form-label">Teks Slogan (Footer)</label>
-               <input type="text" name="footer_desc" class="form-input" value={settings.footer_desc || "Partner digital..."} />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Alamat Surat Elektronik</label>
-              <input type="email" name="footer_email" class="form-input" value={settings.footer_email || ""} />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Nomor WhatsApp Resmi</label>
-              <input type="text" name="whatsapp_number" class="form-input" value={settings.whatsapp_number || "085163219924"} />
-            </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label class="form-label">Alamat Kantor Geografis</label>
-              <input type="text" name="footer_address" class="form-input" value={settings.footer_address || ""} />
-            </div>
+      
+      <!-- Identitas Dasar & Footer -->
+      <div id="tab-identitas" class="tab-content active glass-card" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600;">Pengaturan Identitas Dasar</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+          <div class="form-group">
+            <label class="form-label">Nama Logo / Brand Utama</label>
+            <input type="text" name="site_logo" class="form-input" value={settings.site_logo || "Creative Studio"} />
+          </div>
+          <div class="form-group">
+             <label class="form-label">Teks Slogan (Footer)</label>
+             <input type="text" name="footer_desc" class="form-input" value={settings.footer_desc || "Partner digital yang siap tumbuh bersama bisnis Anda melalui teknologi dan desain modern"} />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alamat Surat Elektronik</label>
+            <input type="email" name="footer_email" class="form-input" value={settings.footer_email || "hello@creativestudio.id"} />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nomor WhatsApp Resmi</label>
+            <input type="text" name="whatsapp_number" class="form-input" value={settings.whatsapp_number || "085163219924"} />
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="form-label">Alamat Kantor Geografis</label>
+            <input type="text" name="footer_address" class="form-input" value={settings.footer_address || ""} />
           </div>
         </div>
+      </div>
 
-        <!-- SEO -->
-        <div class="glass-card" style="padding: 2.5rem; border-top: 4px solid #10b981;">
-          <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; display:flex; align-items:center; gap:0.5rem;">
-            <span>🔍</span> Optimasi Mesin Pencari (SEO)
-          </h3>
-          <div style="display:flex; flex-direction:column; gap:1.5rem;">
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label">Judul Tab Browser Utama <i>(Meta Title)</i></label>
-              <input type="text" name="seo_brand_title" class="form-input" value={settings.seo_brand_title || "Creative Agency - Jasa Pembuatan Website & Digital Marketing"} style="font-size: 1.1rem; color: #60a5fa;" />
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label">Deskripsi Situs <i>(Meta Description)</i></label>
-              <textarea name="seo_meta_desc" class="form-input" rows="2" style="color: #a7f3d0;">{settings.seo_meta_desc || "Konsultan rancang bangun piranti lunak, ekosistem website..."}</textarea>
-              <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top:0.4rem;">Direkomendasikan antara 120-160 karakter untuk indeks terbaik di Google.</p>
-            </div>
+      <!-- SEO -->
+      <div id="tab-seo" class="tab-content glass-card" style="padding: 2.5rem; border-top: 4px solid #10b981;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600;">Konfigurasi Meta Pencarian</h3>
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Judul Tab Browser Utama <i>(Meta Title)</i></label>
+            <input type="text" name="seo_brand_title" class="form-input" value={settings.seo_brand_title || "Creative Agency - Jasa Pembuatan Website & Digital Marketing"} style="font-size: 1.1rem; color: #60a5fa;" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Deskripsi Situs <i>(Meta Description)</i></label>
+            <textarea name="seo_meta_desc" class="form-input" rows="3" style="color: #a7f3d0;">{settings.seo_meta_desc || "Konsultan rancang bangun piranti lunak, ekosistem website korporasi..."}</textarea>
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top:0.4rem;">Direkomendasikan antara 120-160 karakter untuk indeks terbaik di mesin Telusur Google.</p>
           </div>
         </div>
+      </div>
 
-        <!-- Etalase Pintu Depan -->
-        <div class="glass-card" style="padding: 2.5rem; border-top: 4px solid #8b5cf6;">
-          <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; display:flex; align-items:center; gap:0.5rem;">
-            <span>🌠</span> Layar Penuh (Hero Section)
-          </h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label class="form-label">Efek Lencana Teratas (Badge)</label>
-              <input type="text" name="hero_badge" class="form-input" value={settings.hero_badge || "🔥 DIGITAL & BISNIS"} style="width: 50%;" />
-            </div>
-            
-            <div class="form-group" style="grid-column: 1 / -1;">
-               <label class="form-label">Judul Raksasa (Headline)</label>
-               <textarea name="hero_title" class="form-input" rows="2" style="font-size: 1.1rem; font-family: monospace;">{settings.hero_title || hero_title_default}</textarea>
-            </div>
-
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label class="form-label">Dekripsi Pendukung Headline</label>
-              <textarea name="hero_desc" class="form-input" rows="2">{settings.hero_desc || ""}</textarea>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label">Teks CTA Primer (Tombol Ungu)</label>
-              <input type="text" name="hero_btn_primary" class="form-input" value={settings.hero_btn_primary || "Mulai Proyek Anda"} />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Teks CTA Sekunder (Tombol Transparan)</label>
-              <input type="text" name="hero_btn_secondary" class="form-input" value={settings.hero_btn_secondary || "Lihat Layanan"} />
-            </div>
+      <!-- Etalase Pintu Depan -->
+      <div id="tab-hero" class="tab-content glass-card" style="padding: 2.5rem; border-top: 4px solid #8b5cf6;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600;">Penyesuaian Visual Layar Penuh</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="form-label">Efek Lencana Teratas (Badge)</label>
+            <input type="text" name="hero_badge" class="form-input" value={settings.hero_badge || "🔥 DIGITAL & BISNIS"} style="width: 50%;" />
           </div>
-        </div>
-
-        <!-- Takarir Bagian -->
-        <div class="glass-card" style="padding: 2.5rem; border-top: 4px solid #ec4899;">
-          <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; display:flex; align-items:center; gap:0.5rem;">
-            <span>🏷️</span> Penamaan & Label Seksi Halaman
-          </h3>
           
-          <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:1.5rem; align-items: start;">
-            <!-- Row 1 -->
-            <div class="form-group" style="margin:0;">
-              <label class="form-label">Blok "Layanan"</label>
-              <input type="text" name="services_title" class="form-input" value={settings.services_title || services_title_default} />
-            </div>
-            <div class="form-group" style="margin:0;">
-              <label class="form-label">Kalimat Penjelas Layanan</label>
-              <input type="text" name="services_desc" class="form-input" value={settings.services_desc || ""} />
-            </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+             <label class="form-label">Judul Raksasa (Headline Utama) - Tag &lt;br&gt; diijinkan untuk enter/baris baru</label>
+             <textarea name="hero_title" class="form-input" rows="2" style="font-size: 1.1rem; font-family: monospace;">{settings.hero_title || hero_title_default}</textarea>
+          </div>
 
-            <!-- Row 2 -->
-            <div class="form-group" style="margin:0;">
-              <label class="form-label">Blok "Portfolio"</label>
-              <input type="text" name="portfolio_title" class="form-input" value={settings.portfolio_title || "Portfolio <span class=\"text-gradient\">Unggulan</span>"} />
-            </div>
-            <div class="form-group" style="margin:0;">
-               <label class="form-label">Kalimat Penjelas Portfolio</label>
-               <input type="text" name="portfolio_desc" class="form-input" value={settings.portfolio_desc || ""} />
-            </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="form-label">Dekripsi Pendukung Headline</label>
+            <textarea name="hero_desc" class="form-input" rows="3">{settings.hero_desc || "Creative Divisions adalah partner yang membantu bisnis Anda tumbuh di era digital..."}</textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Teks CTA Primer (Tombol Utama)</label>
+            <input type="text" name="hero_btn_primary" class="form-input" value={settings.hero_btn_primary || "Mulai Proyek Anda"} />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teks CTA Sekunder (Tombol Bayangan)</label>
+            <input type="text" name="hero_btn_secondary" class="form-input" value={settings.hero_btn_secondary || "Lihat Layanan"} />
+          </div>
+        </div>
+      </div>
 
-            <!-- Row 3 -->
-            <div class="form-group" style="margin:0;">
-               <label class="form-label">Blok "Testimoni"</label>
-               <input type="text" name="testimonials_title" class="form-input" value={settings.testimonials_title || "Apa Kata <span class=\"text-gradient\">Klien Kami</span>"} />
-            </div>
-            <div class="form-group" style="margin:0;">
-               <label class="form-label">Kalimat Penjelas Testimoni</label>
-               <input type="text" name="testimonials_desc" class="form-input" value={settings.testimonials_desc || ""} />
-            </div>
+      <!-- Takarir Bagian -->
+      <div id="tab-label" class="tab-content glass-card" style="padding: 2.5rem; border-top: 4px solid #ec4899;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600;">Pelabelan Menu & Seksi Situs</h3>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem; align-items: start;">
+          <!-- Layanan -->
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Judul Blok "Layanan"</label>
+            <input type="text" name="services_title" class="form-input" value={settings.services_title || services_title_default} />
+            <br/><br/>
+            <label class="form-label">Kalimat Penjelas "Layanan"</label>
+            <textarea name="services_desc" class="form-input" rows="2">{settings.services_desc || "Layanan terbaik kami dirancang untuk membantu Anda"}</textarea>
+          </div>
 
-            <!-- Row 4 -->
-            <div class="form-group" style="margin:0;">
-               <label class="form-label">Blok "Artikel Blog"</label>
-               <input type="text" name="blog_title" class="form-input" value={settings.blog_title || "Artikel & <span class=\"text-gradient\">Wawasan</span>"} />
-            </div>
-            <div class="form-group" style="margin:0;">
-               <label class="form-label">Kalimat Penjelas Artikel Blog</label>
-               <input type="text" name="blog_desc" class="form-input" value={settings.blog_desc || ""} />
-            </div>
+          <!-- Portfolio -->
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Judul Blok "Portfolio"</label>
+            <input type="text" name="portfolio_title" class="form-input" value={settings.portfolio_title || "Portfolio <span class=\"text-gradient\">Unggulan</span>"} />
+            <br/><br/>
+            <label class="form-label">Kalimat Penjelas "Portfolio"</label>
+            <textarea name="portfolio_desc" class="form-input" rows="2">{settings.portfolio_desc || "Lihat hasil karya terbaik kami yang telah memberi dampak"}</textarea>
+          </div>
+
+          <!-- Testimoni -->
+          <div class="form-group" style="margin:0;">
+             <label class="form-label">Judul Blok "Testimoni"</label>
+             <input type="text" name="testimonials_title" class="form-input" value={settings.testimonials_title || "Apa Kata <span class=\"text-gradient\">Klien Kami</span>"} />
+             <br/><br/>
+             <label class="form-label">Kalimat Penjelas "Testimoni"</label>
+             <textarea name="testimonials_desc" class="form-input" rows="2">{settings.testimonials_desc || "Kepercayaan klien adalah kebanggaan kami"}</textarea>
+          </div>
+
+          <!-- Blog -->
+          <div class="form-group" style="margin:0;">
+             <label class="form-label">Judul Blok "Artikel Blog"</label>
+             <input type="text" name="blog_title" class="form-input" value={settings.blog_title || "Artikel & <span class=\"text-gradient\">Wawasan</span>"} />
+             <br/><br/>
+             <label class="form-label">Kalimat Penjelas "Artikel Blog"</label>
+             <textarea name="blog_desc" class="form-input" rows="2">{settings.blog_desc || "Baca update terbaru seputar industri"}</textarea>
           </div>
         </div>
       </div>
       
-      <!-- Save Action -->
-      <div style="margin-top: 3rem; text-align: center; position: sticky; bottom: 2rem; z-index: 50;">
-        <button type="submit" class="btn btn-primary" style="padding: 1.2rem 4rem; font-size: 1.15rem; font-weight: bold; border-radius: 99px; box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5); border: 2px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
-          💾 Publikasikan Pembaruan Konfigurasi
-        </button>
-      </div>
     </form>
   </div>
 </DashboardLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+
+        // Add active class to clicked tab and its target
+        tab.classList.add('active');
+        const targetId = tab.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            targetElement.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .tab-btn {
+    background: transparent;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 99px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .tab-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  }
+  .tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
