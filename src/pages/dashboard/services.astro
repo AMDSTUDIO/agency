@@ -114,10 +114,13 @@ const services = await db.select().from(Service);
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
               <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ikon (Upload/URL)</label>
-                <div style="display: flex; gap: 0.5rem;">
-                  <input type="text" name="icon_url" class="premium-input" placeholder="URL atau Emoji" style="flex:1;" />
-                  <input type="file" name="icon_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ikon (Emoji/URL/Upload)</label>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                  <input type="text" name="icon_url" class="premium-input" placeholder="Ketik Emoji ATAU link URL..." />
+                  <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer:</span>
+                    <input type="file" name="icon_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                  </div>
                 </div>
               </div>
               <div class="form-group" style="margin: 0;">
@@ -127,10 +130,13 @@ const services = await db.select().from(Service);
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Banner (Upload/URL)</label>
-              <div style="display: flex; gap: 0.5rem;">
-                <input type="url" name="img_url" class="premium-input" placeholder="https://" style="flex:1;" />
-                <input type="file" name="img_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Banner (URL/Upload)</label>
+              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <input type="url" name="img_url" class="premium-input" placeholder="https://" />
+                <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Banner Dari Komputer:</span>
+                  <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                </div>
               </div>
             </div>
 
@@ -209,12 +215,14 @@ const services = await db.select().from(Service);
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ikon (Ganti/Upload)</label>
-                        <div style="display: flex; gap: 0.5rem;">
-                          <input type="text" name="icon_url" class="premium-input" placeholder="URL Baru..." style="flex:1;" />
-                          <input type="file" name="icon_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ikon (Emoji/URL/Upload)</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                          <input type="text" name="icon_url" class="premium-input" placeholder="URL Baru atau Emoji..." value={s.icon && !s.icon.startsWith('/') && !s.icon.startsWith('http') ? s.icon : ''} />
+                          <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer (Abaikan jika tetap):</span>
+                            <input type="file" name="icon_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                          </div>
                         </div>
-                        <small style="color:var(--text-muted); font-size:0.75rem;">Abaikan jika tidak ingin diganti.</small>
                       </div>
                       <div class="form-group" style="margin: 0;">
                         <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Warna Tema</label>
@@ -223,12 +231,14 @@ const services = await db.select().from(Service);
                     </div>
 
                     <div class="form-group" style="margin: 0;">
-                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Banner (Ganti/Upload)</label>
-                      <div style="display: flex; gap: 0.5rem;">
-                        <input type="url" name="img_url" class="premium-input" placeholder="URL Baru..." style="flex:1;" />
-                        <input type="file" name="img_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Banner (URL/Upload)</label>
+                      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        <input type="url" name="img_url" class="premium-input" placeholder="URL Baru..." />
+                        <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                          <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Banner (Abaikan jika tetap):</span>
+                          <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                        </div>
                       </div>
-                      <small style="color:var(--text-muted); font-size:0.75rem;">Abaikan jika tidak ingin diganti.</small>
                     </div>
 
                     <div class="form-group" style="margin: 0;">
