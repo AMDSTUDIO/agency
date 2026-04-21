@@ -155,28 +155,44 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
                 <button class="action-btn danger" style="width: 100%; border-radius: 8px; padding: 0.6rem;">🗑️ Hapus</button>
               </form>
 
-              <dialog id={`edit_modal_${c.id}`} style="padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: #0f141e; color: white; width: 90%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-                <h3 style="margin-top:0; margin-bottom: 1.5rem;">✏️ Edit Klien</h3>
-                <form method="POST" enctype="multipart/form-data">
-                  <input type="hidden" name="action" value="update"/>
-                  <input type="hidden" name="id" value={c.id}/>
-                  <input type="hidden" name="current_logo" value={c.logo}/>
-                  
-                  <div class="form-group">
-                    <label class="form-label" style="text-align: left;">Nama Instansi / Klien</label>
-                    <input type="text" name="name" class="form-input" value={c.name} required />
+              <dialog id={`edit_modal_${c.id}`} class="premium-modal">
+                <div class="modal-header">
+                  <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ubah Profil Klien</h3>
+                  <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${c.id}').close()`}>&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                  <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; padding: 0.5rem; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                      <img src={c.logo} alt="Current Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                    </div>
                   </div>
-                  
-                  <div class="form-group">
-                    <label class="form-label" style="text-align: left;">Ganti Gambar Logo (Kosongkan jika tidak diganti)</label>
-                    <input type="file" name="logo" class="form-input" accept="image/*" style="padding: 0.5rem; background: rgba(0,0,0,0.2)" />
-                  </div>
-                  
-                  <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                    <button type="button" class="btn" style="padding: 0.6rem 1.5rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;" onclick={`document.getElementById('edit_modal_${c.id}').close()`}>Batal</button>
-                    <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: 8px;">Simpan Perubahan</button>
-                  </div>
-                </form>
+
+                  <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="update"/>
+                    <input type="hidden" name="id" value={c.id}/>
+                    <input type="hidden" name="current_logo" value={c.logo}/>
+                    
+                    <div class="form-group">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Instansi</label>
+                      <input type="text" name="name" class="premium-input" value={c.name} required />
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Unggah Logo Baru</label>
+                      <label class="file-upload-zone">
+                        <input type="file" name="logo" accept="image/*" />
+                        <span class="upload-text">Klik untuk menelusuri atau seret gambar ke area ini</span>
+                      </label>
+                      <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Abaikan jika tidak ingin mengganti logo saat ini.</p>
+                    </div>
+                    
+                    <div class="modal-footer">
+                      <button type="button" class="btn-cancel" onclick={`document.getElementById('edit_modal_${c.id}').close()`}>Batal</button>
+                      <button type="submit" class="btn-save">Simpan Perubahan</button>
+                    </div>
+                  </form>
+                </div>
               </dialog>
             </div>
           </div>
@@ -193,7 +209,7 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
   </div>
 </DashboardLayout>
 
-<style>
+<style is:global>
   .add-new-details {
     padding: 0;
     transition: all 0.3s ease;
@@ -225,5 +241,151 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
   @keyframes slideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Premium Dialog Modal Styles */
+  .premium-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    margin: 0;
+    padding: 0;
+    width: 90%;
+    max-width: 480px;
+    background: rgba(15, 20, 30, 0.85);
+    backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* When dialog is open */
+  .premium-modal[open] {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 1000;
+  }
+
+  .premium-modal::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    animation: fade-in 0.3s ease-out forwards;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .close-btn:hover {
+    color: #fff;
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  .premium-input {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+  }
+  .premium-input:focus {
+    border-color: rgba(129, 140, 248, 0.6);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  .file-upload-zone {
+    display: block;
+    position: relative;
+    padding: 1.5rem;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.01);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .file-upload-zone:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(129, 140, 248, 0.5);
+  }
+  .file-upload-zone input[type="file"] {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .upload-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .modal-footer {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  .btn-cancel {
+    padding: 0.8rem 1.5rem;
+    border-radius: 99px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  .btn-save {
+    padding: 0.8rem 2rem;
+    border-radius: 99px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s;
+  }
+  .btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.6);
   }
 </style>
