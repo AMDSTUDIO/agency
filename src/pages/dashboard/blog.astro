@@ -61,7 +61,7 @@ const blogs = await db.select().from(Blog);
     </div>
 
     <!-- Add Blog Modal -->
-    <dialog id="add_modal" class="premium-modal">
+    <dialog id="add_modal" class="premium-modal" style="max-width: 800px; width: 90%;">
       <div class="modal-header">
         <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Editor Artikel</h3>
         <button type="button" class="close-btn" onclick="document.getElementById('add_modal').close()">&times;</button>
@@ -148,7 +148,7 @@ const blogs = await db.select().from(Blog);
                 <button class="action-btn danger" style="border-radius: 8px; padding: 0.4rem 1rem;">Hapus</button>
               </form>
 
-              <dialog id={`edit_modal_${b.id}`} class="premium-modal">
+              <dialog id={`edit_modal_${b.id}`} class="premium-modal" style="max-width: 800px; width: 90%;">
                 <div class="modal-header">
                   <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ubah Artikel</h3>
                   <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${b.id}').close()`}>&times;</button>

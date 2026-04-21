@@ -15,9 +15,10 @@ if (Astro.request.method === 'POST') {
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
     const img = formData.get('img') as string;
+    const content = formData.get('content') as string;
 
     try {
-      await db.update(Portfolio).set({ id, title, category, img }).where(eq(Portfolio.id, original_id));
+      await db.update(Portfolio).set({ id, title, category, img, content }).where(eq(Portfolio.id, original_id));
     } catch (e) {
       console.error(e);
     }
@@ -26,9 +27,10 @@ if (Astro.request.method === 'POST') {
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
     const img = formData.get('img') as string;
+    const content = formData.get('content') as string;
 
     try {
-      await db.insert(Portfolio).values({ id, title, category, img });
+      await db.insert(Portfolio).values({ id, title, category, img, content });
     } catch (e) {
       console.error(e);
     }
@@ -52,7 +54,7 @@ const portfolios = await db.select().from(Portfolio);
     </div>
 
     <!-- Add Portfolio Modal -->
-    <dialog id="add_modal" class="premium-modal">
+    <dialog id="add_modal" class="premium-modal" style="max-width: 800px; width: 90%;">
       <div class="modal-header">
         <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Proyek Baru</h3>
         <button type="button" class="close-btn" onclick="document.getElementById('add_modal').close()">&times;</button>
@@ -81,6 +83,11 @@ const portfolios = await db.select().from(Portfolio);
             <div class="form-group" style="margin: 0;">
               <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Sampul (Unsplash dll)</label>
               <input type="url" name="img" class="premium-input" placeholder="https://" required />
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Konten/Studi Kasus Lengkap (Mendukung HTML)</label>
+              <textarea name="content" class="premium-input" rows="8" placeholder="Ceritakan bagaimana proyek ini dimulai, tantangan, dan hasil akhirnya..."></textarea>
             </div>
           </div>
 
@@ -118,7 +125,7 @@ const portfolios = await db.select().from(Portfolio);
                 <button class="action-btn danger" style="width: 100%; border-radius: 8px; height: 100%; padding: 0.6rem;">🗑️ Hapus</button>
               </form>
 
-              <dialog id={`edit_modal_${p.id}`} class="premium-modal">
+              <dialog id={`edit_modal_${p.id}`} class="premium-modal" style="max-width: 800px; width: 90%;">
                 <div class="modal-header">
                   <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ubah Portfolio</h3>
                   <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${p.id}').close()`}>&times;</button>
@@ -148,6 +155,11 @@ const portfolios = await db.select().from(Portfolio);
                       <div class="form-group" style="margin: 0;">
                         <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Sampul</label>
                         <input type="url" name="img" class="premium-input" value={p.img} required />
+                      </div>
+
+                      <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Konten/Studi Kasus Lengkap (Mendukung HTML)</label>
+                        <textarea name="content" class="premium-input" rows="8">{p.content || ''}</textarea>
                       </div>
                     </div>
 

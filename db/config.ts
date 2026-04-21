@@ -25,6 +25,7 @@ const Portfolio = defineTable({
     title: column.text(),
     category: column.text(),
     img: column.text(),
+    content: column.text({ optional: true }),
   }
 });
 

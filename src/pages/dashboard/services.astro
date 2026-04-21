@@ -58,7 +58,7 @@ const services = await db.select().from(Service);
     </div>
 
     <!-- Add Layanan Modal -->
-    <dialog id="add_modal" class="premium-modal">
+    <dialog id="add_modal" class="premium-modal" style="max-width: 800px; width: 90%;">
       <div class="modal-header">
         <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Layanan Baru</h3>
         <button type="button" class="close-btn" onclick="document.getElementById('add_modal').close()">&times;</button>
@@ -92,7 +92,7 @@ const services = await db.select().from(Service);
 
             <div class="form-group" style="margin: 0;">
               <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
-              <textarea name="desc" class="premium-input" rows="3" placeholder="Penjelasan mengenai layanan..." required></textarea>
+              <textarea name="desc" class="premium-input" rows="8" placeholder="Penjelasan mengenai layanan..." required></textarea>
             </div>
           </div>
 
@@ -131,7 +131,7 @@ const services = await db.select().from(Service);
               <button type="submit" class="action-btn danger" style="width: 100%; border-radius: 8px; height: 100%; padding: 0.6rem;">🗑️ Hapus</button>
             </form>
 
-            <dialog id={`edit_modal_${s.id}`} class="premium-modal">
+            <dialog id={`edit_modal_${s.id}`} class="premium-modal" style="max-width: 800px; width: 90%;">
               <div class="modal-header">
                 <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ubah Layanan</h3>
                 <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${s.id}').close()`}>&times;</button>
@@ -166,7 +166,7 @@ const services = await db.select().from(Service);
 
                     <div class="form-group" style="margin: 0;">
                       <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
-                      <textarea name="desc" class="premium-input" rows="3" required>{s.desc}</textarea>
+                      <textarea name="desc" class="premium-input" rows="8" required>{s.desc}</textarea>
                     </div>
                   </div>
 

@@ -54,7 +54,7 @@ const testimonials = await db.select().from(Testimonial);
     </div>
 
     <!-- Add Testimonial Modal -->
-    <dialog id="add_modal" class="premium-modal">
+    <dialog id="add_modal" class="premium-modal" style="max-width: 800px; width: 90%;">
       <div class="modal-header">
         <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Testimoni Baru</h3>
         <button type="button" class="close-btn" onclick="document.getElementById('add_modal').close()">&times;</button>
@@ -87,7 +87,7 @@ const testimonials = await db.select().from(Testimonial);
 
             <div class="form-group" style="margin: 0;">
               <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ulasan / Testimoni</label>
-              <textarea name="content" class="premium-input" rows="4" required></textarea>
+              <textarea name="content" class="premium-input" rows="8" required></textarea>
             </div>
           </div>
 
@@ -132,7 +132,7 @@ const testimonials = await db.select().from(Testimonial);
               <button class="action-btn danger" style="border-radius: 8px; padding: 0.4rem 1rem;">Hapus</button>
             </form>
 
-            <dialog id={`edit_modal_${t.id}`} class="premium-modal">
+            <dialog id={`edit_modal_${t.id}`} class="premium-modal" style="max-width: 800px; width: 90%;">
               <div class="modal-header">
                 <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ubah Testimoni</h3>
                 <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${t.id}').close()`}>&times;</button>
@@ -166,7 +166,7 @@ const testimonials = await db.select().from(Testimonial);
 
                     <div class="form-group" style="margin: 0;">
                       <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ulasan / Testimoni</label>
-                      <textarea name="content" class="premium-input" rows="4" required>{t.content}</textarea>
+                      <textarea name="content" class="premium-input" rows="8" required>{t.content}</textarea>
                     </div>
                   </div>
 
