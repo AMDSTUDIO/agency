@@ -17,7 +17,7 @@ const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
         {marqueeItems.map(c => (
           <div class="client-logo" title={c.name} style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.8rem;">
             {(displayRule === 'both' || displayRule === 'logo') && (
-              <img src={c.logo} alt={c.name} style={displayRule === 'both' ? "height: 32px; width: auto; object-fit: contain;" : "height: 60px; width: auto; object-fit: contain;"} />
+              <img src={c.logo} alt={c.name} style="height: 60px; width: auto; object-fit: contain;" />
             )}
             {(displayRule === 'both' || displayRule === 'name') && (
               <span style="font-size: 1.1rem; font-weight: 600; font-family: sans-serif; white-space: nowrap;">{c.name}</span>
@@ -49,7 +49,7 @@ const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
 
   .marquee-content {
     display: inline-flex;
-    animation: scroll 30s linear infinite;
+    animation: scroll 90s linear infinite;
   }
 
   .marquee:hover .marquee-content {
