@@ -15,12 +15,12 @@ const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
     <div class="marquee">
       <div class="marquee-content">
         {marqueeItems.map(c => (
-          <div class="client-logo" title={c.name} style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem;">
+          <div class="client-logo" title={c.name} style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.8rem;">
             {(displayRule === 'both' || displayRule === 'logo') && (
-              <img src={c.logo} alt={c.name} style="height: 60px; width: auto; object-fit: contain;" />
+              <img src={c.logo} alt={c.name} style={displayRule === 'both' ? "height: 32px; width: auto; object-fit: contain;" : "height: 60px; width: auto; object-fit: contain;"} />
             )}
             {(displayRule === 'both' || displayRule === 'name') && (
-              <span style="font-size: 0.9rem; font-weight: 500; font-family: sans-serif;">{c.name}</span>
+              <span style="font-size: 1.1rem; font-weight: 600; font-family: sans-serif; white-space: nowrap;">{c.name}</span>
             )}
           </div>
         ))}
