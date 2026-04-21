@@ -10,6 +10,19 @@ if (Astro.request.method === 'POST') {
   if (act === 'delete') {
     const id = formData.get('id') as string;
     await db.delete(Service).where(eq(Service.id, id));
+  } else if (act === 'update') {
+    const original_id = formData.get('original_id') as string;
+    const id = formData.get('id') as string;
+    const title = formData.get('title') as string;
+    const desc = formData.get('desc') as string;
+    const icon = formData.get('icon') as string;
+    const color = formData.get('color') as string || 'hsl(200, 80%, 50%)';
+
+    try {
+      await db.update(Service).set({ id, title, desc, icon, color }).where(eq(Service.id, original_id));
+    } catch (e) {
+      console.error(e);
+    }
   } else if (act === 'create') {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
@@ -33,49 +46,63 @@ const services = await db.select().from(Service);
 <DashboardLayout title="Manajemen Layanan">
   
   <div class="dashboard-action-bar" style="margin-bottom: 2rem;">
-    <details class="glass-card add-new-details">
-      <summary class="add-new-summary">
-        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="font-size: 1.2rem;">✨</span> Tambah Layanan Baru</span>
-        <span class="indicator text-muted">Buka formulir &darr;</span>
-      </summary>
+    <!-- Tambah Layanan Button -->
+    <div class="glass-card" style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-radius: 16px;">
+      <div>
+        <h4 style="margin: 0 0 0.5rem 0; font-weight: 600;">✨ Tambah Layanan Baru</h4>
+        <p class="text-muted" style="margin: 0; font-size: 0.9rem;">Tawarkan keunggulan baru dari agensi Anda.</p>
+      </div>
+      <button onclick="document.getElementById('add_modal').showModal()" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 99px; font-weight: 600;">
+        ➕ Tambah Layanan
+      </button>
+    </div>
+
+    <!-- Add Layanan Modal -->
+    <dialog id="add_modal" class="premium-modal">
+      <div class="modal-header">
+        <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Layanan Baru</h3>
+        <button type="button" class="close-btn" onclick="document.getElementById('add_modal').close()">&times;</button>
+      </div>
       
-      <div class="add-new-content">
+      <div class="modal-body">
         <form method="POST">
           <input type="hidden" name="action" value="create"/>
           
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-            <div class="form-group">
-              <label class="form-label">ID / Slug (Unik, huruf & strip)</label>
-              <input type="text" name="id" class="form-input" placeholder="contoh: cloud-hosting" required />
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID (Unik)</label>
+              <input type="text" name="id" class="premium-input" placeholder="contoh: cloud-hosting" required />
             </div>
 
-            <div class="form-group">
-              <label class="form-label">Nama Layanan</label>
-              <input type="text" name="title" class="form-input" placeholder="Contoh: Cloud Hosting & Server" required />
-            </div>
-
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label class="form-label">Deskripsi Lengkap</label>
-              <textarea name="desc" class="form-input" rows="3" placeholder="Jelaskan penawaran layanan inti kepada klien..." required></textarea>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Ikon (Emoji/Teks Kode)</label>
-              <input type="text" name="icon" class="form-input" placeholder="☁️" required />
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
+              <input type="text" name="title" class="premium-input" placeholder="Contoh: VPS Murah" required />
             </div>
             
-            <div class="form-group">
-              <label class="form-label">Tema Warna Biasa (CSS format)</label>
-              <input type="text" name="color" class="form-input" value="hsl(200, 80%, 50%)" required />
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ikon (Emoji)</label>
+                <input type="text" name="icon" class="premium-input" placeholder="☁️" required />
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Warna Tema</label>
+                <input type="text" name="color" class="premium-input" value="hsl(200, 80%, 50%)" required />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
+              <textarea name="desc" class="premium-input" rows="3" placeholder="Penjelasan mengenai layanan..." required></textarea>
             </div>
           </div>
 
-          <div style="margin-top: 1.5rem; text-align: right;">
-            <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 99px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);">Simpan Layanan Baru</button>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" onclick="document.getElementById('add_modal').close()">Batal</button>
+            <button type="submit" class="btn-save">Simpan Layanan</button>
           </div>
         </form>
       </div>
-    </details>
+    </dialog>
   </div>
     
   <div>
@@ -96,12 +123,60 @@ const services = await db.select().from(Service);
             <p class="text-muted" style="font-size: 0.9rem; line-height: 1.5;">{s.desc.length > 120 ? s.desc.substring(0, 120) + '...' : s.desc}</p>
           </div>
           
-          <div style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.2rem; display: flex; justify-content: flex-end;">
-            <form method="POST" style="margin:0;" onsubmit="return confirm('Data layanan ini akan dihapus permanen. Lanjutkan?');">
+          <div style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.2rem; display: flex; gap: 0.5rem;">
+            <button type="button" onclick={`document.getElementById('edit_modal_${s.id}').showModal()`} class="action-btn" style="width: 100%; border-radius: 8px; padding: 0.6rem; background: rgba(99,102,241,0.1); color: #818cf8; border: 1px solid rgba(99,102,241,0.2);">✏️ Edit</button>
+            <form method="POST" style="margin:0; flex:1;" onsubmit="return confirm('Data layanan ini akan dihapus permanen. Lanjutkan?');">
               <input type="hidden" name="action" value="delete" />
               <input type="hidden" name="id" value={s.id} />
-              <button type="submit" class="action-btn danger" style="width: 100%; border-radius: 8px;">🗑️ Hapus Layanan</button>
+              <button type="submit" class="action-btn danger" style="width: 100%; border-radius: 8px; height: 100%; padding: 0.6rem;">🗑️ Hapus</button>
             </form>
+
+            <dialog id={`edit_modal_${s.id}`} class="premium-modal">
+              <div class="modal-header">
+                <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ubah Layanan</h3>
+                <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${s.id}').close()`}>&times;</button>
+              </div>
+              
+              <div class="modal-body">
+                <form method="POST">
+                  <input type="hidden" name="action" value="update"/>
+                  <input type="hidden" name="original_id" value={s.id}/>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID</label>
+                      <input type="text" name="id" class="premium-input" value={s.id} required />
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
+                      <input type="text" name="title" class="premium-input" value={s.title} required />
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                      <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ikon</label>
+                        <input type="text" name="icon" class="premium-input" value={s.icon} required />
+                      </div>
+                      <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Warna Tema</label>
+                        <input type="text" name="color" class="premium-input" value={s.color} required />
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
+                      <textarea name="desc" class="premium-input" rows="3" required>{s.desc}</textarea>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick={`document.getElementById('edit_modal_${s.id}').close()`}>Batal</button>
+                    <button type="submit" class="btn-save">Simpan Perubahan</button>
+                  </div>
+                </form>
+              </div>
+            </dialog>
           </div>
         </div>
       ))}
@@ -116,37 +191,4 @@ const services = await db.select().from(Service);
   </div>
 </DashboardLayout>
 
-<style>
-  .add-new-details {
-    padding: 0;
-    transition: all 0.3s ease;
-  }
-  .add-new-details[open] {
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  }
-  .add-new-summary {
-    list-style: none;
-    padding: 1.5rem 2rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    user-select: none;
-  }
-  .add-new-summary::-webkit-details-marker {
-    display: none;
-  }
-  .add-new-content {
-    padding: 0 2rem 2rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    margin-top: 0.5rem;
-    padding-top: 1.5rem;
-    animation: slideDown 0.3s ease-out forwards;
-  }
-  
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
+
