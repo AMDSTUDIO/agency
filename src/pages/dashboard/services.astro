@@ -1,6 +1,21 @@
 ---
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import { db, Service, eq } from 'astro:db';
+import fs from 'node:fs';
+import path from 'node:path';
+
+async function processFile(file: File | null, defaultUrl: string) {
+  if (file && file.size > 0 && file.name) {
+    const dir = path.join(process.cwd(), 'public', 'uploads');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const ext = file.name.split('.').pop() || 'png';
+    const name = `${Date.now()}-${Math.round(Math.random()*1000)}.${ext}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(path.join(dir, name), buffer);
+    return `/uploads/${name}`;
+  }
+  return defaultUrl;
+}
 
 // Process Form Submissions (Create or Delete)
 if (Astro.request.method === 'POST') {
@@ -15,9 +30,16 @@ if (Astro.request.method === 'POST') {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const desc = formData.get('desc') as string;
-    const icon = formData.get('icon') as string;
     const color = formData.get('color') as string || '#6366f1';
-    const img = formData.get('img') as string || '';
+    
+    const iconUrl = formData.get('icon_url') as string || (formData.get('existing_icon') as string) || '';
+    const iconFile = formData.get('icon_file') as File | null;
+    const icon = await processFile(iconFile, iconUrl);
+
+    const imgUrl = formData.get('img_url') as string || (formData.get('existing_img') as string) || '';
+    const imgFile = formData.get('img_file') as File | null;
+    const img = await processFile(imgFile, imgUrl);
+
     const capabilities = formData.get('capabilities') as string || '';
 
     try {
@@ -29,16 +51,22 @@ if (Astro.request.method === 'POST') {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const desc = formData.get('desc') as string;
-    const icon = formData.get('icon') as string;
     const color = formData.get('color') as string || '#6366f1';
-    const img = formData.get('img') as string || '';
+    
+    const iconUrl = formData.get('icon_url') as string || '';
+    const iconFile = formData.get('icon_file') as File | null;
+    const icon = await processFile(iconFile, iconUrl);
+
+    const imgUrl = formData.get('img_url') as string || '';
+    const imgFile = formData.get('img_file') as File | null;
+    const img = await processFile(imgFile, imgUrl);
+
     const capabilities = formData.get('capabilities') as string || '';
 
     try {
       await db.insert(Service).values({ id, title, desc, icon, color, img, capabilities });
     } catch (e) {
       console.error(e);
-      // Handle error natively
     }
   }
 }
@@ -69,44 +97,53 @@ const services = await db.select().from(Service);
       </div>
       
       <div class="modal-body">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
           <input type="hidden" name="action" value="create"/>
           
           <div style="display: flex; flex-direction: column; gap: 1rem;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
               <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Nama Layanan</label>
                 <input type="text" id="service_title_add" name="title" class="premium-input" placeholder="Contoh: VPS Murah" required />
               </div>
               <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID (Auto-Slug)</label>
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Kode ID (Auto-Slug)</label>
                 <input type="text" id="service_slug_add" name="id" class="premium-input" placeholder="contoh: vps-murah" required />
               </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 1rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
               <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ikon (Emoji)</label>
-                <input type="text" name="icon" class="premium-input" placeholder="☁️" required />
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ikon (Upload/URL)</label>
+                <div style="display: flex; gap: 0.5rem;">
+                  <input type="text" name="icon_url" class="premium-input" placeholder="URL atau Emoji" style="flex:1;" />
+                  <input type="file" name="icon_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+                </div>
               </div>
               <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Warna Tema</label>
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Warna Tema</label>
                 <input type="color" name="color" class="premium-input" style="padding: 0.2rem; height: 48px; cursor: pointer;" value="#6366f1" required />
               </div>
-              <div class="form-group" style="margin: 0;">
-                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Banner (Detail)</label>
-                <input type="url" name="img" class="premium-input" placeholder="https://" />
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Banner (Upload/URL)</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="url" name="img_url" class="premium-input" placeholder="https://" style="flex:1;" />
+                <input type="file" name="img_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
               </div>
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
-              <textarea name="desc" class="premium-input" rows="5" placeholder="Penjelasan mengenai layanan..." required></textarea>
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Deskripsi Lengkap</label>
+              <textarea name="desc" class="premium-input" rows="3" placeholder="Penjelasan mengenai layanan..." required></textarea>
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nilai Tambah & Kapabilitas (Satu per baris)</label>
-              <textarea name="capabilities" class="premium-input" rows="4" placeholder="Format: Ikon | Judul | Penjelasan&#10;Contoh:&#10;🎯 | Penargetan Audiens | Menjangkau target spesifik" required></textarea>
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Nilai Tambah & Kapabilitas</label>
+              <input type="hidden" name="capabilities" id="caps_hidden_add" />
+              <div id="caps_list_add" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;"></div>
+              <button type="button" onclick="addCapUI('caps_list_add', 'caps_hidden_add')" class="btn" style="background: rgba(99,102,241,0.1); color: #818cf8; width: 100%; border: 1px dashed #818cf8; border-radius: 8px; padding: 0.8rem;">+ Tambah Kapabilitas Baru</button>
             </div>
           </div>
 
@@ -152,46 +189,58 @@ const services = await db.select().from(Service);
               </div>
               
               <div class="modal-body">
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                   <input type="hidden" name="action" value="update"/>
                   <input type="hidden" name="original_id" value={s.id}/>
+                  <input type="hidden" name="existing_icon" value={s.icon}/>
+                  <input type="hidden" name="existing_img" value={s.img || ''}/>
                   
                   <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <div class="form-group" style="margin: 0;">
-                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
-                      <input type="text" name="title" class="premium-input" value={s.title} required />
-                    </div>
-
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID</label>
-                        <input type="text" name="id" class="premium-input" value={s.id} required />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Nama Layanan</label>
+                        <input type="text" name="title" class="premium-input" value={s.title} required />
                       </div>
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Banner</label>
-                        <input type="url" name="img" class="premium-input" value={s.img} />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Kode ID</label>
+                        <input type="text" name="id" class="premium-input" value={s.id} required />
                       </div>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ikon</label>
-                        <input type="text" name="icon" class="premium-input" value={s.icon} required />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ikon (Ganti/Upload)</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                          <input type="text" name="icon_url" class="premium-input" placeholder="URL Baru..." style="flex:1;" />
+                          <input type="file" name="icon_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+                        </div>
+                        <small style="color:var(--text-muted); font-size:0.75rem;">Abaikan jika tidak ingin diganti.</small>
                       </div>
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Warna Tema</label>
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Warna Tema</label>
                         <input type="color" name="color" class="premium-input" style="padding: 0.2rem; height: 48px; cursor: pointer;" value={s.color.startsWith('#') ? s.color : '#6366f1'} required />
                       </div>
                     </div>
 
                     <div class="form-group" style="margin: 0;">
-                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
-                      <textarea name="desc" class="premium-input" rows="5" required>{s.desc}</textarea>
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Banner (Ganti/Upload)</label>
+                      <div style="display: flex; gap: 0.5rem;">
+                        <input type="url" name="img_url" class="premium-input" placeholder="URL Baru..." style="flex:1;" />
+                        <input type="file" name="img_file" class="premium-input" accept="image/*" style="flex:1; padding:0.4rem; height:48px;" />
+                      </div>
+                      <small style="color:var(--text-muted); font-size:0.75rem;">Abaikan jika tidak ingin diganti.</small>
                     </div>
 
                     <div class="form-group" style="margin: 0;">
-                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nilai Tambah & Kapabilitas (Satu per baris)</label>
-                      <textarea name="capabilities" class="premium-input" rows="4" placeholder="Format: Ikon | Judul | Penjelasan" required>{s.capabilities || ''}</textarea>
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Deskripsi Lengkap</label>
+                      <textarea name="desc" class="premium-input" rows="3" required>{s.desc}</textarea>
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Nilai Tambah & Kapabilitas</label>
+                      <input type="hidden" name="capabilities" id={`caps_hidden_${s.id}`} value={s.capabilities || ''} />
+                      <div id={`caps_list_${s.id}`} style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;"></div>
+                      <button type="button" onclick={`addCapUI('caps_list_${s.id}', 'caps_hidden_${s.id}')`} class="btn" style="background: rgba(99,102,241,0.1); color: #818cf8; width: 100%; border: 1px dashed #818cf8; border-radius: 8px; padding: 0.8rem;">+ Tambah Kapabilitas Baru</button>
                     </div>
                   </div>
 
@@ -217,15 +266,90 @@ const services = await db.select().from(Service);
 </DashboardLayout>
 
 <script is:inline>
-  // Script untuk Ide 2: Auto-Slug Creation
-  const titleInput = document.getElementById('service_title_add');
-  const slugInput = document.getElementById('service_slug_add');
-  if (titleInput && slugInput) {
-    titleInput.addEventListener('input', function() {
-      // Mengubah teks judul menjadi format slug: hapus simbol, spasi jadi strip, kecilkan huruf.
-      slugInput.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-    });
+  // UI Builder untuk Kapabilitas
+  function encodeCapRow(icon, title, desc) {
+    return `${(icon||'').replace(/\|/g,'')} | ${(title||'').replace(/\|/g,'')} | ${(desc||'').replace(/\|/g,'')}`;
   }
+
+  function addCapUI(targetId, hiddenId, icon='', title='', desc='') {
+    const list = document.getElementById(targetId);
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.style = "display: flex; gap: 0.5rem; align-items: stretch; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);";
+    
+    // Icon input
+    const elIcon = document.createElement('input');
+    elIcon.type = "text"; elIcon.value = icon; elIcon.className = "premium-input"; elIcon.style = "width: 50px; padding: 0.4rem; text-align: center;"; elIcon.placeholder = "⚙️";
+    elIcon.oninput = () => updateCap(targetId, hiddenId);
+
+    // Title input
+    const elTitle = document.createElement('input');
+    elTitle.type = "text"; elTitle.value = title; elTitle.className = "premium-input"; elTitle.style = "flex: 1; padding: 0.4rem;"; elTitle.placeholder = "Judul Kapabilitas";
+    elTitle.oninput = () => updateCap(targetId, hiddenId);
+
+    // Desc input
+    const elDesc = document.createElement('input');
+    elDesc.type = "text"; elDesc.value = desc; elDesc.className = "premium-input"; elDesc.style = "flex: 2; padding: 0.4rem;"; elDesc.placeholder = "Deskripsi Singkat...";
+    elDesc.oninput = () => updateCap(targetId, hiddenId);
+
+    // Del btn
+    const elDel = document.createElement('button');
+    elDel.type = "button"; elDel.className = "btn danger"; elDel.innerText = "❌"; elDel.style = "padding: 0.4rem; border-radius: 8px;";
+    elDel.onclick = function() { row.remove(); updateCap(targetId, hiddenId); };
+
+    row.appendChild(elIcon);
+    row.appendChild(elTitle);
+    row.appendChild(elDesc);
+    row.appendChild(elDel);
+
+    list.appendChild(row);
+    updateCap(targetId, hiddenId);
+  }
+
+  function updateCap(targetId, hiddenId) {
+    const list = document.getElementById(targetId);
+    const hidden = document.getElementById(hiddenId);
+    if (!list || !hidden) return;
+
+    let lines = [];
+    Array.from(list.children).forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length === 3) {
+        lines.push(`${inputs[0].value.trim()} | ${inputs[1].value.trim()} | ${inputs[2].value.trim()}`);
+      }
+    });
+    hidden.value = lines.join('\n');
+  }
+
+  // Pre-fill Edit Modals with capabilities safely via attribute inspection 
+  // We attach a load event to parse hidden inputs on page load
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("input[id^='caps_hidden_']").forEach(hidden => {
+      const targetId = hidden.id.replace('caps_hidden_', 'caps_list_');
+      const val = hidden.value;
+      
+      // Clear container first just in case
+      const c = document.getElementById(targetId);
+      if(c) c.innerHTML = '';
+      
+      if (val) {
+        val.split('\n').forEach(line => {
+          const p = line.split('|').map(s => s.trim());
+          if (p.length >= 3) addCapUI(targetId, hidden.id, p[0], p[1], p[2]);
+        });
+      }
+    });
+
+    // Auto-Slug Add Logic
+    const titleInput = document.getElementById('service_title_add');
+    const slugInput = document.getElementById('service_slug_add');
+    if (titleInput && slugInput) {
+      titleInput.addEventListener('input', function() {
+        slugInput.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      });
+    }
+  });
 </script>
 
 
