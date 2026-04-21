@@ -23,7 +23,7 @@ const bannerImages: Record<string, string> = {
   "av-specialist": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?q=80&w=2000&auto=format&fit=crop"
 };
 
-const coverImg = bannerImages[entry.id] || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop";
+const coverImg = entry.img || bannerImages[entry.id] || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop";
 
 const capsMap: Record<string, {icon:string, title:string, desc:string}[]> = {
   "live-streaming": [

@@ -16,11 +16,12 @@ if (Astro.request.method === 'POST') {
     const title = formData.get('title') as string;
     const desc = formData.get('desc') as string;
     const icon = formData.get('icon') as string;
-    const color = formData.get('color') as string || 'hsl(200, 80%, 50%)';
+    const color = formData.get('color') as string || '#6366f1';
+    const img = formData.get('img') as string || '';
     const capabilities = formData.get('capabilities') as string || '';
 
     try {
-      await db.update(Service).set({ id, title, desc, icon, color, capabilities }).where(eq(Service.id, original_id));
+      await db.update(Service).set({ id, title, desc, icon, color, img, capabilities }).where(eq(Service.id, original_id));
     } catch (e) {
       console.error(e);
     }
@@ -29,11 +30,12 @@ if (Astro.request.method === 'POST') {
     const title = formData.get('title') as string;
     const desc = formData.get('desc') as string;
     const icon = formData.get('icon') as string;
-    const color = formData.get('color') as string || 'hsl(200, 80%, 50%)';
+    const color = formData.get('color') as string || '#6366f1';
+    const img = formData.get('img') as string || '';
     const capabilities = formData.get('capabilities') as string || '';
 
     try {
-      await db.insert(Service).values({ id, title, desc, icon, color, capabilities });
+      await db.insert(Service).values({ id, title, desc, icon, color, img, capabilities });
     } catch (e) {
       console.error(e);
       // Handle error natively
@@ -71,24 +73,29 @@ const services = await db.select().from(Service);
           <input type="hidden" name="action" value="create"/>
           
           <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID (Unik)</label>
-              <input type="text" name="id" class="premium-input" placeholder="contoh: cloud-hosting" required />
-            </div>
-
-            <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
-              <input type="text" name="title" class="premium-input" placeholder="Contoh: VPS Murah" required />
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
+                <input type="text" id="service_title_add" name="title" class="premium-input" placeholder="Contoh: VPS Murah" required />
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID (Auto-Slug)</label>
+                <input type="text" id="service_slug_add" name="id" class="premium-input" placeholder="contoh: vps-murah" required />
+              </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 1rem;">
               <div class="form-group" style="margin: 0;">
                 <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ikon (Emoji)</label>
                 <input type="text" name="icon" class="premium-input" placeholder="☁️" required />
               </div>
               <div class="form-group" style="margin: 0;">
                 <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Warna Tema</label>
-                <input type="text" name="color" class="premium-input" value="hsl(200, 80%, 50%)" required />
+                <input type="color" name="color" class="premium-input" style="padding: 0.2rem; height: 48px; cursor: pointer;" value="#6366f1" required />
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Banner (Detail)</label>
+                <input type="url" name="img" class="premium-input" placeholder="https://" />
               </div>
             </div>
 
@@ -151,13 +158,19 @@ const services = await db.select().from(Service);
                   
                   <div style="display: flex; flex-direction: column; gap: 1rem;">
                     <div class="form-group" style="margin: 0;">
-                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID</label>
-                      <input type="text" name="id" class="premium-input" value={s.id} required />
-                    </div>
-
-                    <div class="form-group" style="margin: 0;">
                       <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Layanan</label>
                       <input type="text" name="title" class="premium-input" value={s.title} required />
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                      <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID</label>
+                        <input type="text" name="id" class="premium-input" value={s.id} required />
+                      </div>
+                      <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Banner</label>
+                        <input type="url" name="img" class="premium-input" value={s.img} />
+                      </div>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
@@ -167,7 +180,7 @@ const services = await db.select().from(Service);
                       </div>
                       <div class="form-group" style="margin: 0;">
                         <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Warna Tema</label>
-                        <input type="text" name="color" class="premium-input" value={s.color} required />
+                        <input type="color" name="color" class="premium-input" style="padding: 0.2rem; height: 48px; cursor: pointer;" value={s.color.startsWith('#') ? s.color : '#6366f1'} required />
                       </div>
                     </div>
 
@@ -202,5 +215,17 @@ const services = await db.select().from(Service);
     )}
   </div>
 </DashboardLayout>
+
+<script is:inline>
+  // Script untuk Ide 2: Auto-Slug Creation
+  const titleInput = document.getElementById('service_title_add');
+  const slugInput = document.getElementById('service_slug_add');
+  if (titleInput && slugInput) {
+    titleInput.addEventListener('input', function() {
+      // Mengubah teks judul menjadi format slug: hapus simbol, spasi jadi strip, kecilkan huruf.
+      slugInput.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    });
+  }
+</script>
 
 
