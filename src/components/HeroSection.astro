@@ -99,7 +99,9 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
   .hero-card {
     position: relative;
     overflow: hidden;
-    height: 400px;
+    height: auto;
+    min-height: 300px;
+    padding-bottom: 2rem;
     transform: rotateY(-15deg) rotateX(10deg);
     animation: float 6s ease-in-out infinite;
   }
@@ -189,13 +191,18 @@ const settings = Object.fromEntries(rawSettings.map(s => [s.key, s.value]));
   @media (max-width: 900px) {
     .hero-container {
       grid-template-columns: 1fr;
+      gap: 2rem;
     }
     .hero-card {
       transform: none;
       animation: none;
+      min-height: auto;
+      padding-bottom: 1rem;
     }
     .hero {
       padding-top: 6rem;
+      min-height: auto;
+      padding-bottom: 2rem;
     }
   }
   

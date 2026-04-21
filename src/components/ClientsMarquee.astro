@@ -9,18 +9,18 @@ const marqueeItems = [...clientsData, ...clientsData, ...clientsData, ...clients
 const settingQuery = await db.select().from(GlobalSetting).where(eq(GlobalSetting.key, "client_display_rule"));
 const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
 ---
-<div style="margin: 4rem 0 0 0;">
-  <p class="marquee-title text-muted" style="display: block; width: 100%; text-align: center; font-size: 0.7rem; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8;">Dipercaya oleh berbagai instansi dan perusahaan</p>
+<div class="marquee-section">
+  <p class="marquee-title text-muted">Klien & Mitra Kolaborasi</p>
   <div class="marquee-wrapper">
     <div class="marquee">
       <div class="marquee-content">
         {marqueeItems.map(c => (
-          <div class="client-logo" title={c.name} style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.8rem;">
+          <div class="client-logo" title={c.name}>
             {(displayRule === 'both' || displayRule === 'logo') && (
-              <img src={c.logo} alt={c.name} style="height: 60px; width: auto; object-fit: contain;" />
+              <img src={c.logo} alt={c.name} class="marquee-img" />
             )}
             {(displayRule === 'both' || displayRule === 'name') && (
-              <span style="font-size: 1.1rem; font-weight: 600; font-family: sans-serif; white-space: nowrap;">{c.name}</span>
+              <span class="marquee-text">{c.name}</span>
             )}
           </div>
         ))}
@@ -58,7 +58,10 @@ const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
 
   .client-logo {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-muted);
@@ -81,8 +84,56 @@ const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
     opacity: 0.3;
   }
 
+  .marquee-section {
+    margin: 4rem 0 0 0;
+  }
+
+  .marquee-title {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 0.65rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.7;
+    font-weight: 600;
+  }
+
+  .marquee-img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .marquee-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: sans-serif;
+    white-space: nowrap;
+  }
+
   @keyframes scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+  }
+
+  @media (max-width: 768px) {
+    .marquee-section {
+      margin: 1.5rem 0 0 0;
+    }
+    .marquee-wrapper {
+      padding: 1.5rem 0;
+    }
+    .client-logo {
+      margin: 0 1.5rem;
+      gap: 0.5rem;
+    }
+    .marquee-img {
+      height: 40px;
+    }
+    .marquee-text {
+      font-size: 0.95rem;
+    }
   }
 </style>
