@@ -38,6 +38,7 @@ const Testimonial = defineTable({
     role: column.text(),
     content: column.text(),
     avatar: column.text(),
+    cover: column.text({ optional: true }),
   }
 });
 

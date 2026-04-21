@@ -115,13 +115,9 @@ const blogs = await db.select().from(Blog);
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Cover (URL/Upload)</label>
-              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-                <input type="url" name="img_url" class="premium-input" placeholder="URL Gambar..." />
-                <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
-                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer:</span>
-                  <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
-                </div>
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Unggah Gambar Cover</label>
+              <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" required />
               </div>
             </div>
 
@@ -210,13 +206,9 @@ const blogs = await db.select().from(Blog);
                       </div>
 
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Gambar Cover (URL/Upload)</label>
-                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-                          <input type="url" name="img_url" class="premium-input" placeholder="URL Baru..." />
-                          <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer (Abaikan jika tetap):</span>
-                            <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
-                          </div>
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Ganti Gambar Cover (Biarkan jika sama)</label>
+                        <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                          <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
                         </div>
                       </div>
 
