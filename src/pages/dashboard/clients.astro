@@ -1,8 +1,21 @@
 ---
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import { db, Client, GlobalSetting, eq } from 'astro:db';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'node:path';
+
+async function processFile(file: File | null, defaultUrl: string) {
+  if (file && file.size > 0 && file.name) {
+    const dir = path.join(process.cwd(), 'public', 'uploads');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const ext = file.name.split('.').pop() || 'png';
+    const name = `${Date.now()}-${Math.round(Math.random()*1000)}.${ext}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(path.join(dir, name), buffer);
+    return `/uploads/${name}`;
+  }
+  return defaultUrl;
+}
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -12,7 +25,6 @@ if (Astro.request.method === 'POST') {
     const rule = formData.get('rule') as string;
     const existingRule = await db.select().from(GlobalSetting).where(eq(GlobalSetting.key, "client_display_rule"));
     if (existingRule.length > 0) {
-      // Drizzle/Astro DB uses update for existing rows
       await db.update(GlobalSetting).set({ value: rule }).where(eq(GlobalSetting.key, "client_display_rule"));
     } else {
       await db.insert(GlobalSetting).values({ key: "client_display_rule", value: rule });
@@ -23,24 +35,10 @@ if (Astro.request.method === 'POST') {
   } else if (act === 'update') {
     const id = formData.get('id') as string;
     const name = formData.get('name') as string;
-    const currentLogo = formData.get('current_logo') as string;
-    const logoFile = formData.get('logo') as File;
     
-    let logoUrl = currentLogo;
-
-    if (logoFile && logoFile.size > 0) {
-      const arrayBuffer = await logoFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const randomSuffix = Math.floor(Math.random() * 10000).toString();
-      const safeName = logoFile.name.replace(/[^a-zA-Z0-9.\-]/g, "");
-      const fileName = `client_${Date.now()}_${randomSuffix}_${safeName}`;
-      
-      const dirPath = path.join(process.cwd(), 'public', 'clients');
-      await fs.mkdir(dirPath, { recursive: true }).catch(() => {});
-      
-      await fs.writeFile(path.join(dirPath, fileName), buffer);
-      logoUrl = `/clients/${fileName}`;
-    }
+    const imgUrl = formData.get('logo_url') as string || (formData.get('existing_logo') as string) || '';
+    const imgFile = formData.get('logo_file') as File | null;
+    const logoUrl = await processFile(imgFile, imgUrl);
 
     try {
       await db.update(Client).set({ name, logo: logoUrl }).where(eq(Client.id, id));
@@ -49,24 +47,12 @@ if (Astro.request.method === 'POST') {
     }
   } else if (act === 'create') {
     const name = formData.get('name') as string;
-    const logoFile = formData.get('logo') as File;
     
     const id = 'client_' + Date.now().toString(36);
-    let logoUrl = '';
-
-    if (logoFile && logoFile.size > 0) {
-      const arrayBuffer = await logoFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const randomSuffix = Math.floor(Math.random() * 10000).toString();
-      const safeName = logoFile.name.replace(/[^a-zA-Z0-9.\-]/g, "");
-      const fileName = `client_${Date.now()}_${randomSuffix}_${safeName}`;
-      
-      const dirPath = path.join(process.cwd(), 'public', 'clients');
-      await fs.mkdir(dirPath, { recursive: true }).catch(() => {});
-      
-      await fs.writeFile(path.join(dirPath, fileName), buffer);
-      logoUrl = `/clients/${fileName}`;
-    }
+    
+    const imgUrl = formData.get('logo_url') as string || '';
+    const imgFile = formData.get('logo_file') as File | null;
+    const logoUrl = await processFile(imgFile, imgUrl);
 
     try {
       await db.insert(Client).values({ id, name, logo: logoUrl });
@@ -129,11 +115,14 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
           </div>
           
           <div class="form-group" style="margin-top: 1.5rem;">
-            <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Unggah Gambar Logo</label>
-            <label class="file-upload-zone">
-              <input type="file" name="logo" accept="image/*" required />
-              <span class="upload-text">Klik untuk menelusuri atau seret gambar ke area ini</span>
-            </label>
+            <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Logo Klien (URL/Upload)</label>
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+              <input type="url" name="logo_url" class="premium-input" placeholder="URL Logo..." />
+              <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer:</span>
+                <input type="file" name="logo_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+              </div>
+            </div>
           </div>
           
           <div class="modal-footer">
@@ -185,7 +174,7 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
                   <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="update"/>
                     <input type="hidden" name="id" value={c.id}/>
-                    <input type="hidden" name="current_logo" value={c.logo}/>
+                    <input type="hidden" name="existing_logo" value={c.logo || ''}/>
                     
                     <div class="form-group">
                       <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nama Instansi</label>
@@ -193,12 +182,14 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
                     </div>
                     
                     <div class="form-group" style="margin-top: 1.5rem;">
-                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Unggah Logo Baru</label>
-                      <label class="file-upload-zone">
-                        <input type="file" name="logo" accept="image/*" />
-                        <span class="upload-text">Klik untuk menelusuri atau seret gambar ke area ini</span>
-                      </label>
-                      <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Abaikan jika tidak ingin mengganti logo saat ini.</p>
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase;">Logo Klien (URL/Upload)</label>
+                      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        <input type="url" name="logo_url" class="premium-input" placeholder="URL Baru..." />
+                        <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                          <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer (Abaikan jika tetap):</span>
+                          <input type="file" name="logo_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                        </div>
+                      </div>
                     </div>
                     
                     <div class="modal-footer">

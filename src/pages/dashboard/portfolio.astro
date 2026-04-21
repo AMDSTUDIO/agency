@@ -1,6 +1,21 @@
 ---
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import { db, Portfolio, eq } from 'astro:db';
+import fs from 'node:fs';
+import path from 'node:path';
+
+async function processFile(file: File | null, defaultUrl: string) {
+  if (file && file.size > 0 && file.name) {
+    const dir = path.join(process.cwd(), 'public', 'uploads');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const ext = file.name.split('.').pop() || 'png';
+    const name = `${Date.now()}-${Math.round(Math.random()*1000)}.${ext}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(path.join(dir, name), buffer);
+    return `/uploads/${name}`;
+  }
+  return defaultUrl;
+}
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -14,8 +29,11 @@ if (Astro.request.method === 'POST') {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
-    const img = formData.get('img') as string;
     const content = formData.get('content') as string;
+
+    const imgUrl = formData.get('img_url') as string || (formData.get('existing_img') as string) || '';
+    const imgFile = formData.get('img_file') as File | null;
+    const img = await processFile(imgFile, imgUrl);
 
     try {
       await db.update(Portfolio).set({ id, title, category, img, content }).where(eq(Portfolio.id, original_id));
@@ -26,8 +44,11 @@ if (Astro.request.method === 'POST') {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
-    const img = formData.get('img') as string;
     const content = formData.get('content') as string;
+
+    const imgUrl = formData.get('img_url') as string || '';
+    const imgFile = formData.get('img_file') as File | null;
+    const img = await processFile(imgFile, imgUrl);
 
     try {
       await db.insert(Portfolio).values({ id, title, category, img, content });
@@ -61,7 +82,7 @@ const portfolios = await db.select().from(Portfolio);
       </div>
       
       <div class="modal-body">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
           <input type="hidden" name="action" value="create"/>
           
           <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -81,8 +102,14 @@ const portfolios = await db.select().from(Portfolio);
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Sampul (Unsplash dll)</label>
-              <input type="url" name="img" class="premium-input" placeholder="https://" required />
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Gambar Sampul (URL/Upload)</label>
+              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <input type="url" name="img_url" class="premium-input" placeholder="URL Gambar..." />
+                <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer:</span>
+                  <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                </div>
+              </div>
             </div>
 
             <div class="form-group" style="margin: 0;">
@@ -153,8 +180,14 @@ const portfolios = await db.select().from(Portfolio);
                       </div>
 
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">URL Gambar Sampul</label>
-                        <input type="url" name="img" class="premium-input" value={p.img} required />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Gambar Sampul (URL/Upload)</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                          <input type="url" name="img_url" class="premium-input" placeholder="URL Baru..." />
+                          <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">Atau Unggah Dari Komputer (Abaikan jika tetap):</span>
+                            <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                          </div>
+                        </div>
                       </div>
 
                       <div class="form-group" style="margin: 0;">
