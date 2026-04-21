@@ -16,6 +16,7 @@ const Service = defineTable({
     desc: column.text(),
     icon: column.text(),
     color: column.text(),
+    capabilities: column.text({ optional: true }),
   }
 });
 

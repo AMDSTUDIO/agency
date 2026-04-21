@@ -17,9 +17,10 @@ if (Astro.request.method === 'POST') {
     const desc = formData.get('desc') as string;
     const icon = formData.get('icon') as string;
     const color = formData.get('color') as string || 'hsl(200, 80%, 50%)';
+    const capabilities = formData.get('capabilities') as string || '';
 
     try {
-      await db.update(Service).set({ id, title, desc, icon, color }).where(eq(Service.id, original_id));
+      await db.update(Service).set({ id, title, desc, icon, color, capabilities }).where(eq(Service.id, original_id));
     } catch (e) {
       console.error(e);
     }
@@ -29,9 +30,10 @@ if (Astro.request.method === 'POST') {
     const desc = formData.get('desc') as string;
     const icon = formData.get('icon') as string;
     const color = formData.get('color') as string || 'hsl(200, 80%, 50%)';
+    const capabilities = formData.get('capabilities') as string || '';
 
     try {
-      await db.insert(Service).values({ id, title, desc, icon, color });
+      await db.insert(Service).values({ id, title, desc, icon, color, capabilities });
     } catch (e) {
       console.error(e);
       // Handle error natively
@@ -92,7 +94,12 @@ const services = await db.select().from(Service);
 
             <div class="form-group" style="margin: 0;">
               <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
-              <textarea name="desc" class="premium-input" rows="8" placeholder="Penjelasan mengenai layanan..." required></textarea>
+              <textarea name="desc" class="premium-input" rows="5" placeholder="Penjelasan mengenai layanan..." required></textarea>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nilai Tambah & Kapabilitas (Satu per baris)</label>
+              <textarea name="capabilities" class="premium-input" rows="4" placeholder="Format: Ikon | Judul | Penjelasan&#10;Contoh:&#10;🎯 | Penargetan Audiens | Menjangkau target spesifik" required></textarea>
             </div>
           </div>
 
@@ -166,7 +173,12 @@ const services = await db.select().from(Service);
 
                     <div class="form-group" style="margin: 0;">
                       <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Deskripsi Lengkap</label>
-                      <textarea name="desc" class="premium-input" rows="8" required>{s.desc}</textarea>
+                      <textarea name="desc" class="premium-input" rows="5" required>{s.desc}</textarea>
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Nilai Tambah & Kapabilitas (Satu per baris)</label>
+                      <textarea name="capabilities" class="premium-input" rows="4" placeholder="Format: Ikon | Judul | Penjelasan" required>{s.capabilities || ''}</textarea>
                     </div>
                   </div>
 
