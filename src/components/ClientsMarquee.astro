@@ -1,27 +1,38 @@
 ---
 // ClientsMarquee.astro
-const clients = [
-  "GlobalBank", "StarMedia", "Innovate.AI", "TechWave", "EduCorp", "MetaCo",
-  "GlobalBank", "StarMedia", "Innovate.AI", "TechWave", "EduCorp", "MetaCo" // duplicated for smooth scroll
-];
+import { db, Client, GlobalSetting, eq } from 'astro:db';
+
+const clientsData = await db.select().from(Client);
+const marqueeItems = [...clientsData, ...clientsData, ...clientsData, ...clientsData];
+
+// Ambil aturan tampilan (both, logo, name)
+const settingQuery = await db.select().from(GlobalSetting).where(eq(GlobalSetting.key, "client_display_rule"));
+const displayRule = settingQuery.length > 0 ? settingQuery[0].value : "both";
 ---
-<div class="marquee-wrapper">
-  <p class="marquee-title text-muted" style="display: block; width: 100%; text-align: center; font-size: 0.85rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">DIpercaya oleh berbagai perusahaan</p>
-  <div class="marquee">
-    <div class="marquee-content">
-      {clients.map(client => (
-        <div class="client-logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem; opacity:0.7"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          {client}
-        </div>
-      ))}
+<div style="margin: 4rem 0 0 0;">
+  <p class="marquee-title text-muted" style="display: block; width: 100%; text-align: center; font-size: 0.7rem; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8;">Dipercaya oleh berbagai instansi dan perusahaan</p>
+  <div class="marquee-wrapper">
+    <div class="marquee">
+      <div class="marquee-content">
+        {marqueeItems.map(c => (
+          <div class="client-logo" title={c.name} style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem;">
+            {(displayRule === 'both' || displayRule === 'logo') && (
+              <img src={c.logo} alt={c.name} style="height: 60px; width: auto; object-fit: contain;" />
+            )}
+            {(displayRule === 'both' || displayRule === 'name') && (
+              <span style="font-size: 0.9rem; font-weight: 500; font-family: sans-serif;">{c.name}</span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </div>
 
 <style>
   .marquee-wrapper {
-    padding: 4rem 0;
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--glass-border);
     border-bottom: 1px solid var(--glass-border);
     background: var(--glass-bg);
   }

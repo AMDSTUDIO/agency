@@ -1,5 +1,14 @@
 import { defineDb, defineTable, column } from 'astro:db';
 
+const Client = defineTable({
+  columns: {
+    id: column.text({ primaryKey: true }),
+    name: column.text(),
+    logo: column.text(),
+  }
+});
+
+
 const Service = defineTable({
   columns: {
     id: column.text({ primaryKey: true }),
@@ -70,5 +79,5 @@ const Message = defineTable({
 });
 
 export default defineDb({
-  tables: { Service, Portfolio, Testimonial, Blog, User, GlobalSetting, Message }
+  tables: { Service, Portfolio, Testimonial, Blog, User, GlobalSetting, Message, Client }
 });

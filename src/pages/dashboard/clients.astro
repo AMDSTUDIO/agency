@@ -1,0 +1,177 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { db, Client, GlobalSetting, eq } from 'astro:db';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const act = formData.get('action');
+
+  if (act === 'update_rule') {
+    const rule = formData.get('rule') as string;
+    const existingRule = await db.select().from(GlobalSetting).where(eq(GlobalSetting.key, "client_display_rule"));
+    if (existingRule.length > 0) {
+      // Drizzle/Astro DB uses update for existing rows
+      await db.update(GlobalSetting).set({ value: rule }).where(eq(GlobalSetting.key, "client_display_rule"));
+    } else {
+      await db.insert(GlobalSetting).values({ key: "client_display_rule", value: rule });
+    }
+  } else if (act === 'delete') {
+    const id = formData.get('id') as string;
+    await db.delete(Client).where(eq(Client.id, id));
+  } else if (act === 'create') {
+    const name = formData.get('name') as string;
+    const logoFile = formData.get('logo') as File;
+    
+    const id = 'client_' + Date.now().toString(36);
+    let logoUrl = '';
+
+    if (logoFile && logoFile.size > 0) {
+      const arrayBuffer = await logoFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const randomSuffix = Math.floor(Math.random() * 10000).toString();
+      const safeName = logoFile.name.replace(/[^a-zA-Z0-9.\-]/g, "");
+      const fileName = `client_${Date.now()}_${randomSuffix}_${safeName}`;
+      
+      const dirPath = path.join(process.cwd(), 'public', 'clients');
+      await fs.mkdir(dirPath, { recursive: true }).catch(() => {});
+      
+      await fs.writeFile(path.join(dirPath, fileName), buffer);
+      logoUrl = `/clients/${fileName}`;
+    }
+
+    try {
+      await db.insert(Client).values({ id, name, logo: logoUrl });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+}
+
+const clientsData = await db.select().from(Client);
+
+const settingQuery = await db.select().from(GlobalSetting).where(eq(GlobalSetting.key, "client_display_rule"));
+const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
+---
+
+<DashboardLayout title="Manajemen Klien">
+  <div class="dashboard-action-bar" style="margin-bottom: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+    <!-- Bagian Pengatur Tampilan Marquee -->
+    <div class="glass-card" style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-radius: 16px;">
+      <div>
+        <h4 style="margin: 0 0 0.5rem 0; font-weight: 600;">🌟 Opsi Tampilan Marquee Client</h4>
+        <p class="text-muted" style="margin: 0; font-size: 0.9rem;">Pilih komponen mana yang terlihat berjejeran di halaman depan.</p>
+      </div>
+      <form method="POST" style="margin: 0; display: flex; gap: 1rem; align-items: center;">
+        <input type="hidden" name="action" value="update_rule"/>
+        <select name="rule" class="form-input" style="width: auto; padding: 0.6rem 2rem 0.6rem 1rem;" onchange="this.form.submit()">
+          <option value="logo" selected={currentRule === "logo"}>Hanya Logo Instansi</option>
+          <option value="name" selected={currentRule === "name"}>Hanya Nama Teks</option>
+          <option value="both" selected={currentRule === "both"}>Logo Beserta Nama</option>
+        </select>
+      </form>
+    </div>
+
+    <!-- Tambah Klien Form -->
+    <details class="glass-card add-new-details">
+      <summary class="add-new-summary">
+        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="font-size: 1.2rem;">✨</span> Tambah Klien & Logo</span>
+        <span class="indicator text-muted">Buka formulir &darr;</span>
+      </summary>
+      
+      <div class="add-new-content">
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="action" value="create"/>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div class="form-group">
+              <label class="form-label">Nama Instansi / Klien</label>
+              <input type="text" name="name" class="form-input" required placeholder="Contoh: Masjid Raya..." />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Unggah Gambar Logo (PNG/JPG/SVG/WEBP)</label>
+              <input type="file" name="logo" class="form-input" accept="image/*" required style="padding: 0.5rem; background: rgba(0,0,0,0.2)" />
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; text-align: right;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 99px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);">🚀 Simpan Klien</button>
+          </div>
+        </form>
+      </div>
+    </details>
+  </div>
+
+  <div>
+    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 600;">Direktori Klien Aktif</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem;">
+      {clientsData.map(c => (
+        <div class="data-card glass-card" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease;">
+          <div style="position: relative; height: 140px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); padding: 1.5rem;">
+            <img src={c.logo} alt={c.name} style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));" />
+          </div>
+          
+          <div style="padding: 1.25rem; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+            <div style="margin-bottom: 1rem; text-align: center;">
+              <h4 style="font-size: 1.05rem; font-weight: 600; color: #fff; line-height: 1.3;">{c.name}</h4>
+              <span style="font-size: 0.75rem; color: var(--text-muted); border-radius: 4px; padding: 0.2rem 0.5rem; background: rgba(0,0,0,0.2); display: inline-block; margin-top: 0.5rem;">ID: {c.id}</span>
+            </div>
+            
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+              <form method="POST" style="margin:0;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus klien ini?');">
+                <input type="hidden" name="action" value="delete"/>
+                <input type="hidden" name="id" value={c.id}/>
+                <button class="action-btn danger" style="width: 100%; border-radius: 8px; padding: 0.6rem;">🗑️ Hapus</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {clientsData.length === 0 && (
+      <div class="glass-card" style="text-align:center; color: var(--text-muted); padding: 4rem 2rem; border-style: dashed;">
+        <span style="font-size: 3rem; opacity: 0.5; display: block; margin-bottom: 1rem;">🏢</span>
+        Belum ada entri logo klien. Silakan tambahkan klien pertama Anda.
+      </div>
+    )}
+  </div>
+</DashboardLayout>
+
+<style>
+  .add-new-details {
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+  .add-new-details[open] {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .add-new-summary {
+    list-style: none;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    user-select: none;
+  }
+  .add-new-summary::-webkit-details-marker {
+    display: none;
+  }
+  .add-new-content {
+    padding: 0 2rem 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    animation: slideDown 0.3s ease-out forwards;
+  }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

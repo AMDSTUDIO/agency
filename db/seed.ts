@@ -1,4 +1,4 @@
-import { db, Service, Portfolio, Testimonial, Blog, User, GlobalSetting } from 'astro:db';
+import { db, Service, Portfolio, Testimonial, Blog, User, GlobalSetting, Client } from 'astro:db';
 
 export default async function seed() {
   await db.insert(GlobalSetting).values([
@@ -206,5 +206,12 @@ export default async function seed() {
       excerpt: "Tips manajerial dan finansial untuk membuat skala startup Anda sehat dan profitable.",
       content: "<p>Banyak usaha rintisan kolaps di fase pendanaan A bukan akibat cacat teknikal proyeknya, melainkan ledakan beban pengeluaran tetap (burn rate) yang tidak mampu diimbangi proyeksi pemasukan dasar (ARR). Merancang margin profitabilitas struktural semenjak bulan pertama operasional terbukti memperpanjang garis pertahanan likuiditas fundamental perusahaan skala awal.</p>"
     }
+  ]);
+  await db.insert(Client).values([
+    { id: "c1", name: "Masjid Abu Bakar Ash-Shiddiq", logo: "/clients/media__1776742773220.png" },
+    { id: "c2", name: "Masjid Al-Akram", logo: "/clients/media__1776741931870.png" },
+    { id: "c3", name: "Yayasan Islam At-Taubah", logo: "/clients/media__1776741846864.png" },
+    { id: "c4", name: "AIS Al-Amanah", logo: "/clients/media__1776741844413.png" },
+    { id: "c5", name: "Rehlaa Tour and Travel", logo: "/clients/media__1776741841175.png" }
   ]);
 }
