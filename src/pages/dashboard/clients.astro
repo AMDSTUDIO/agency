@@ -20,6 +20,33 @@ if (Astro.request.method === 'POST') {
   } else if (act === 'delete') {
     const id = formData.get('id') as string;
     await db.delete(Client).where(eq(Client.id, id));
+  } else if (act === 'update') {
+    const id = formData.get('id') as string;
+    const name = formData.get('name') as string;
+    const currentLogo = formData.get('current_logo') as string;
+    const logoFile = formData.get('logo') as File;
+    
+    let logoUrl = currentLogo;
+
+    if (logoFile && logoFile.size > 0) {
+      const arrayBuffer = await logoFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const randomSuffix = Math.floor(Math.random() * 10000).toString();
+      const safeName = logoFile.name.replace(/[^a-zA-Z0-9.\-]/g, "");
+      const fileName = `client_${Date.now()}_${randomSuffix}_${safeName}`;
+      
+      const dirPath = path.join(process.cwd(), 'public', 'clients');
+      await fs.mkdir(dirPath, { recursive: true }).catch(() => {});
+      
+      await fs.writeFile(path.join(dirPath, fileName), buffer);
+      logoUrl = `/clients/${fileName}`;
+    }
+
+    try {
+      await db.update(Client).set({ name, logo: logoUrl }).where(eq(Client.id, id));
+    } catch (e) {
+      console.error(e);
+    }
   } else if (act === 'create') {
     const name = formData.get('name') as string;
     const logoFile = formData.get('logo') as File;
@@ -120,12 +147,37 @@ const currentRule = settingQuery.length > 0 ? settingQuery[0].value : "logo";
               <span style="font-size: 0.75rem; color: var(--text-muted); border-radius: 4px; padding: 0.2rem 0.5rem; background: rgba(0,0,0,0.2); display: inline-block; margin-top: 0.5rem;">ID: {c.id}</span>
             </div>
             
-            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; display: flex; gap: 0.5rem; flex-direction: column;">
+              <button type="button" onclick={`document.getElementById('edit_modal_${c.id}').showModal()`} class="action-btn" style="width: 100%; border-radius: 8px; padding: 0.6rem; background: rgba(99,102,241,0.1); color: #818cf8; border: 1px solid rgba(99,102,241,0.2);">✏️ Edit</button>
               <form method="POST" style="margin:0;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus klien ini?');">
                 <input type="hidden" name="action" value="delete"/>
                 <input type="hidden" name="id" value={c.id}/>
                 <button class="action-btn danger" style="width: 100%; border-radius: 8px; padding: 0.6rem;">🗑️ Hapus</button>
               </form>
+
+              <dialog id={`edit_modal_${c.id}`} style="padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); background: #0f141e; color: white; width: 90%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                <h3 style="margin-top:0; margin-bottom: 1.5rem;">✏️ Edit Klien</h3>
+                <form method="POST" enctype="multipart/form-data">
+                  <input type="hidden" name="action" value="update"/>
+                  <input type="hidden" name="id" value={c.id}/>
+                  <input type="hidden" name="current_logo" value={c.logo}/>
+                  
+                  <div class="form-group">
+                    <label class="form-label" style="text-align: left;">Nama Instansi / Klien</label>
+                    <input type="text" name="name" class="form-input" value={c.name} required />
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label" style="text-align: left;">Ganti Gambar Logo (Kosongkan jika tidak diganti)</label>
+                    <input type="file" name="logo" class="form-input" accept="image/*" style="padding: 0.5rem; background: rgba(0,0,0,0.2)" />
+                  </div>
+                  
+                  <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn" style="padding: 0.6rem 1.5rem; background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; cursor: pointer;" onclick={`document.getElementById('edit_modal_${c.id}').close()`}>Batal</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: 8px;">Simpan Perubahan</button>
+                  </div>
+                </form>
+              </dialog>
             </div>
           </div>
         </div>
