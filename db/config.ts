@@ -28,6 +28,8 @@ const Portfolio = defineTable({
     category: column.text(),
     img: column.text(),
     content: column.text({ optional: true }),
+    focus: column.text({ optional: true }),
+    metric: column.text({ optional: true }),
   }
 });
 

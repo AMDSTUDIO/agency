@@ -19,8 +19,8 @@ if (!entry) return new Response("Not found", { status: 404 });
       <span class="category" style="font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; display: inline-block; background: var(--bg); padding: 0.5rem 1rem; border-radius: 8px; color: var(--fg); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">{entry.category}</span>
       <h1 class="title-xl" style="font-size: clamp(2rem, 5vw, 4rem); max-width: 900px; margin-bottom: 1rem;">{entry.title}</h1>
       <div class="meta" style="display: flex; gap: 2rem; color: var(--fg); opacity: 0.8; font-size: 1rem;">
-        <span>Fokus: <strong>Product Design</strong></span>
-        <span>Metrik: <strong style="color: #34d399;">+245% ROI</strong></span>
+        <span>Fokus: <strong>{entry.focus || '-'}</strong></span>
+        <span>Metrik: <strong style="color: #34d399;">{entry.metric || '-'}</strong></span>
       </div>
     </div>
   </div>

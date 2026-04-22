@@ -30,13 +30,15 @@ if (Astro.request.method === 'POST') {
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
     const content = formData.get('content') as string;
+    const focus = formData.get('focus') as string;
+    const metric = formData.get('metric') as string;
 
     const imgUrl = formData.get('img_url') as string || (formData.get('existing_img') as string) || '';
     const imgFile = formData.get('img_file') as File | null;
     const img = await processFile(imgFile, imgUrl);
 
     try {
-      await db.update(Portfolio).set({ id, title, category, img, content }).where(eq(Portfolio.id, original_id));
+      await db.update(Portfolio).set({ id, title, category, img, content, focus, metric }).where(eq(Portfolio.id, original_id));
     } catch (e) {
       console.error(e);
     }
@@ -45,13 +47,15 @@ if (Astro.request.method === 'POST') {
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
     const content = formData.get('content') as string;
+    const focus = formData.get('focus') as string;
+    const metric = formData.get('metric') as string;
 
     const imgUrl = formData.get('img_url') as string || '';
     const imgFile = formData.get('img_file') as File | null;
     const img = await processFile(imgFile, imgUrl);
 
     try {
-      await db.insert(Portfolio).values({ id, title, category, img, content });
+      await db.insert(Portfolio).values({ id, title, category, img, content, focus, metric });
     } catch (e) {
       console.error(e);
     }
@@ -81,42 +85,52 @@ const portfolios = await db.select().from(Portfolio);
         <button type="button" class="close-btn" onclick="document.getElementById('add_modal').close()">&times;</button>
       </div>
       
-      <div class="modal-body">
+      <div class="modal-body" style="padding: 2rem;">
         <form method="POST" enctype="multipart/form-data">
           <input type="hidden" name="action" value="create"/>
           
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Layanan ID (Unik)</label>
-              <input type="text" name="id" class="premium-input" placeholder="contoh: re-design-app" required />
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🔑 Layanan ID (Unik)</label>
+              <input type="text" name="id" class="premium-input" placeholder="contoh: re-design-app" required style="width: 100%; box-sizing: border-box;" />
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Judul Proyek</label>
-              <input type="text" name="title" class="premium-input" placeholder="Contoh: Redesign Aplikasi Bank" required />
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🏷️ Kategori (Sub-judul)</label>
+              <input type="text" name="category" class="premium-input" placeholder="mis: Web App • Fintech" required style="width: 100%; box-sizing: border-box;" />
             </div>
-            
-            <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kategori (Sub-judul)</label>
-              <input type="text" name="category" class="premium-input" placeholder="mis: Web App • Fintech" required />
+
+            <div class="form-group" style="margin: 0; grid-column: 1 / -1;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">📝 Judul Proyek</label>
+              <input type="text" name="title" class="premium-input" placeholder="Contoh: Redesign Aplikasi Bank" required style="width: 100%; box-sizing: border-box; font-size: 1.1rem; padding: 1rem;" />
             </div>
 
             <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Unggah Gambar Sampul</label>
-              <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
-                <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" required />
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🎯 Fokus</label>
+              <input type="text" name="focus" class="premium-input" placeholder="mis: Product Design" style="width: 100%; box-sizing: border-box;" />
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: #34d399;">📈 Metrik Utama</label>
+              <input type="text" name="metric" class="premium-input" placeholder="mis: +245% ROI" style="width: 100%; box-sizing: border-box;" />
+            </div>
+
+            <div class="form-group" style="margin: 0; grid-column: 1 / -1;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🖼️ Unggah Gambar Sampul</label>
+              <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 1rem; border-radius: 8px; text-align: center; transition: border-color 0.3s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">
+                <input type="file" name="img_file" accept="image/*" style="font-size: 0.9rem; color: #fff; width: 100%;" required />
               </div>
             </div>
 
-            <div class="form-group" style="margin: 0;">
-              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Konten/Studi Kasus Lengkap (Mendukung HTML)</label>
-              <textarea name="content" class="premium-input" rows="8" placeholder="Ceritakan bagaimana proyek ini dimulai, tantangan, dan hasil akhirnya..."></textarea>
+            <div class="form-group" style="margin: 0; grid-column: 1 / -1;">
+              <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">✍️ Konten/Studi Kasus Lengkap (Mendukung HTML)</label>
+              <textarea name="content" class="premium-input" rows="8" placeholder="Ceritakan bagaimana proyek ini dimulai, tantangan, dan hasil akhirnya..." style="width: 100%; box-sizing: border-box;"></textarea>
             </div>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn-cancel" onclick="document.getElementById('add_modal').close()">Batal</button>
-            <button type="submit" class="btn-save">Simpan Portfolio</button>
+          <div class="modal-footer" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <button type="button" class="btn-cancel" onclick="document.getElementById('add_modal').close()" style="padding: 0.8rem 1.5rem;">Batal</button>
+            <button type="submit" class="btn-save" style="padding: 0.8rem 1.5rem; background: linear-gradient(135deg, var(--primary), #a5b4fc); border: none; font-weight: bold; color: white;">✨ Simpan Portfolio</button>
           </div>
         </form>
       </div>
@@ -154,43 +168,54 @@ const portfolios = await db.select().from(Portfolio);
                   <button type="button" class="close-btn" onclick={`document.getElementById('edit_modal_${p.id}').close()`}>&times;</button>
                 </div>
                 
-                <div class="modal-body">
-                  <form method="POST">
+                <div class="modal-body" style="padding: 2rem;">
+                  <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="update"/>
                     <input type="hidden" name="original_id" value={p.id}/>
                     
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kode ID</label>
-                        <input type="text" name="id" class="premium-input" value={p.id} required />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🔑 Kode ID</label>
+                        <input type="text" name="id" class="premium-input" value={p.id} required style="width: 100%; box-sizing: border-box;" />
                       </div>
 
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Judul Proyek</label>
-                        <input type="text" name="title" class="premium-input" value={p.title} required />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🏷️ Kategori</label>
+                        <input type="text" name="category" class="premium-input" value={p.category} required style="width: 100%; box-sizing: border-box;" />
                       </div>
-                      
-                      <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Kategori</label>
-                        <input type="text" name="category" class="premium-input" value={p.category} required />
+
+                      <div class="form-group" style="margin: 0; grid-column: 1 / -1;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">📝 Judul Proyek</label>
+                        <input type="text" name="title" class="premium-input" value={p.title} required style="width: 100%; box-sizing: border-box; font-size: 1.1rem; padding: 1rem;" />
                       </div>
 
                       <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Ganti Gambar Sampul (Biarkan jika sama)</label>
-                        <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 0.6rem; border-radius: 8px;">
-                          <input type="file" name="img_file" accept="image/*" style="font-size: 0.85rem; color: #fff; width: 100%;" />
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🎯 Fokus</label>
+                        <input type="text" name="focus" class="premium-input" value={p.focus || ''} placeholder="mis: Product Design" style="width: 100%; box-sizing: border-box;" />
+                      </div>
+
+                      <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: #34d399;">📈 Metrik Utama</label>
+                        <input type="text" name="metric" class="premium-input" value={p.metric || ''} placeholder="mis: +245% ROI" style="width: 100%; box-sizing: border-box;" />
+                      </div>
+
+                      <div class="form-group" style="margin: 0; grid-column: 1 / -1;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">🖼️ Ganti Gambar Sampul (Biarkan jika sama)</label>
+                        <div style="background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.15); padding: 1rem; border-radius: 8px; text-align: center; transition: border-color 0.3s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">
+                          <input type="file" name="img_file" accept="image/*" style="font-size: 0.9rem; color: #fff; width: 100%;" />
+                          <input type="hidden" name="existing_img" value={p.img} />
                         </div>
                       </div>
 
-                      <div class="form-group" style="margin: 0;">
-                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Konten/Studi Kasus Lengkap (Mendukung HTML)</label>
-                        <textarea name="content" class="premium-input" rows="8">{p.content || ''}</textarea>
+                      <div class="form-group" style="margin: 0; grid-column: 1 / -1;">
+                        <label class="form-label" style="text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">✍️ Konten/Studi Kasus Lengkap (Mendukung HTML)</label>
+                        <textarea name="content" class="premium-input" rows="8" style="width: 100%; box-sizing: border-box;">{p.content || ''}</textarea>
                       </div>
                     </div>
 
-                    <div class="modal-footer">
-                      <button type="button" class="btn-cancel" onclick={`document.getElementById('edit_modal_${p.id}').close()`}>Batal</button>
-                      <button type="submit" class="btn-save">Simpan Perubahan</button>
+                    <div class="modal-footer" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                      <button type="button" class="btn-cancel" onclick={`document.getElementById('edit_modal_${p.id}').close()`} style="padding: 0.8rem 1.5rem;">Batal</button>
+                      <button type="submit" class="btn-save" style="padding: 0.8rem 1.5rem; background: linear-gradient(135deg, var(--primary), #a5b4fc); border: none; font-weight: bold; color: white;">✨ Simpan Perubahan</button>
                     </div>
                   </form>
                 </div>
